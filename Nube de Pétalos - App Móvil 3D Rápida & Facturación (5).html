@@ -1,0 +1,3855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#7e22ce" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Nube de Pétalos" />
+  <title>Nube de Pétalos — Flores Eternas &amp; Detalles</title>
+
+  <!-- Dynamic PWA Manifest & Apple Touch Icon -->
+  <link id="pwa-manifest-link" rel="manifest" href="" />
+  <link id="apple-touch-icon-link" rel="apple-touch-icon" href="" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts (Non-blocking display=swap) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            script: ['Great Vibes', 'cursive'],
+          },
+          colors: {
+            cream: '#fffdf9',
+            creamSoft: '#faf6f0',
+            lavender: {
+              light: '#f3e8ff',
+              DEFAULT: '#9333ea',
+              dark: '#6b21a8',
+            },
+            petal: {
+              light: '#fce7f3',
+              DEFAULT: '#ec4899',
+              dark: '#be185d',
+            },
+            skyPastel: {
+              light: '#e0f2fe',
+              DEFAULT: '#38bdf8',
+              dark: '#0369a1',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f4eef8;
+      color: #1e293b;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overscroll-behavior-y: contain;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .pb-safe-nav {
+      padding-bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
+    }
+    .bottom-nav-safe {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #invoice-modal, #invoice-modal * {
+        visibility: visible;
+      }
+      #invoice-modal {
+        position: fixed;
+        inset: 0;
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center bg-gradient-to-br from-purple-100/80 via-pink-50/80 to-sky-100/80">
+
+  <!-- ===================================================================== -->
+  <!-- FAST SPLASH SCREEN (Auto-dismisses in 550ms, never blocks UI)         -->
+  <!-- ===================================================================== -->
+  <div id="app-splash-screen" class="fixed inset-0 z-[100] bg-gradient-to-b from-[#fffdf9] via-[#f8effc] to-[#fcebf4] flex flex-col items-center justify-center p-6 transition-opacity duration-300 pointer-events-none">
+    <div class="w-32 h-32 rounded-full p-1.5 bg-gradient-to-tr from-lavender via-petal to-skyPastel shadow-xl mb-4">
+      <div class="w-full h-full rounded-full bg-cream overflow-hidden flex items-center justify-center">
+        <img id="splash-logo-img" src="" alt="Nube de Pétalos" class="w-full h-full object-cover" />
+      </div>
+    </div>
+    <h1 class="font-script text-5xl bg-gradient-to-r from-lavender-dark via-petal-dark to-skyPastel-dark bg-clip-text text-transparent">
+      Nube de Pétalos
+    </h1>
+    <p class="text-[11px] font-extrabold tracking-[0.24em] uppercase text-slate-500 mt-1">
+      Flores Eternas &amp; Detalles
+    </p>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MOBILE APP SHELL CONTAINER                                            -->
+  <!-- ===================================================================== -->
+  <div class="w-full max-w-[480px] min-h-screen bg-cream shadow-2xl border-x border-white/80 flex flex-col relative">
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-[95] w-[92%] max-w-[430px] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- =================================================================== -->
+    <!-- STICKY TOP APP HEADER                                               -->
+    <!-- =================================================================== -->
+    <header class="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-lavender/15 px-4 py-2.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="switchMainTab('inicio')">
+        <div class="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-lavender via-petal to-skyPastel shadow-sm shrink-0">
+          <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
+            <img id="header-logo-img" src="" alt="Logo Nube de Pétalos" class="w-full h-full object-cover" />
+          </div>
+        </div>
+        <div class="min-w-0">
+          <h1 class="font-script text-[26px] leading-none bg-gradient-to-r from-lavender-dark via-petal-dark to-skyPastel-dark bg-clip-text text-transparent truncate">
+            Nube de Pétalos
+          </h1>
+          <p class="text-[9px] font-bold tracking-[0.16em] uppercase text-slate-500 truncate mt-0.5">
+            Flores Eternas &amp; Detalles
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button
+          type="button"
+          id="install-pwa-btn"
+          onclick="triggerInstallApp()"
+          class="min-h-[38px] px-3 py-1.5 rounded-full bg-gradient-to-r from-lavender to-petal text-white text-[11px] font-bold shadow-xs active:scale-95 transition flex items-center gap-1.5"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span>Instalar App</span>
+        </button>
+
+        <button
+          type="button"
+          onclick="openOwnerPinModal()"
+          class="w-10 h-10 rounded-full bg-lavender-light/75 hover:bg-lavender-light text-lavender-dark flex items-center justify-center transition active:scale-95 border border-lavender/20"
+          title="Acceso Dueños (PIN)"
+          aria-label="Modo Dueño"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- MAIN SCROLLABLE APP VIEWS (4 ORGANIZED TABS)                        -->
+    <!-- =================================================================== -->
+    <main class="flex-1 pb-safe-nav overflow-x-hidden">
+
+      <!-- ================================================================= -->
+      <!-- TAB 1: INICIO (Brand Hero, Quick Budgets & Real Works Catalog)    -->
+      <!-- ================================================================= -->
+      <section id="view-inicio" class="app-view p-4 space-y-5">
+
+        <!-- Hero Welcome Card with Circular Logo -->
+        <div class="rounded-3xl bg-gradient-to-br from-lavender-light/90 via-petal-light/80 to-skyPastel-light/85 p-5 border border-white shadow-sm">
+          <div class="flex items-center gap-4">
+            <div class="w-20 h-20 rounded-full p-1 bg-white shadow-md shrink-0">
+              <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-cream">
+                <img id="hero-logo-img" src="" alt="Nube de Pétalos" class="w-full h-full object-cover" />
+              </div>
+            </div>
+            <div class="min-w-0">
+              <span class="inline-block px-2.5 py-0.5 rounded-full bg-white/90 text-lavender-dark text-[10px] font-extrabold uppercase tracking-wider mb-1">
+                Hechos a mano • Tocancipá
+              </span>
+              <h2 class="font-serif text-lg font-bold text-slate-800 leading-snug">
+                Regala flores que nunca se marchitan
+              </h2>
+              <p class="text-xs text-slate-600 mt-1">
+                Arma tu ramo en 3D o dinos tu presupuesto y te mostramos opciones reales.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5 mt-4">
+            <button
+              type="button"
+              onclick="switchMainTab('armar')"
+              class="min-h-[46px] py-2.5 px-3 rounded-2xl bg-gradient-to-r from-lavender-dark to-petal-dark text-white font-bold text-xs shadow-sm active:scale-95 transition flex items-center justify-center gap-1.5"
+            >
+              <span>✨ Armar mi Ramo 3D</span>
+            </button>
+            <button
+              type="button"
+              onclick="switchMainTab('presupuesto')"
+              class="min-h-[46px] py-2.5 px-3 rounded-2xl bg-white hover:bg-creamSoft text-lavender-dark font-bold text-xs shadow-sm border border-lavender/25 active:scale-95 transition flex items-center justify-center gap-1.5"
+            >
+              <span>💰 Por Presupuesto</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Budget Strip -->
+        <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs">
+          <div class="flex items-center justify-between mb-2.5">
+            <h3 class="font-serif font-bold text-sm text-slate-800">⚡ ¿Cuánto deseas invertir?</h3>
+            <span class="text-[11px] font-semibold text-lavender">Ver opciones</span>
+          </div>
+          <div class="grid grid-cols-4 gap-2">
+            <button type="button" onclick="jumpToBudget(30000)" class="min-h-[42px] py-2 rounded-xl bg-lavender-light/60 hover:bg-lavender-light text-lavender-dark font-extrabold text-xs transition active:scale-95">$30 mil</button>
+            <button type="button" onclick="jumpToBudget(40000)" class="min-h-[42px] py-2 rounded-xl bg-petal-light/70 hover:bg-petal-light text-petal-dark font-extrabold text-xs transition active:scale-95">$40 mil</button>
+            <button type="button" onclick="jumpToBudget(55000)" class="min-h-[42px] py-2 rounded-xl bg-skyPastel-light/70 hover:bg-skyPastel-light text-skyPastel-dark font-extrabold text-xs transition active:scale-95">$55 mil</button>
+            <button type="button" onclick="jumpToBudget(80000)" class="min-h-[42px] py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-extrabold text-xs transition active:scale-95">$80 mil</button>
+          </div>
+        </div>
+
+        <!-- Real Catalog / Featured Bouquets Showcase -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between px-1">
+            <div>
+              <h3 class="font-serif font-bold text-base text-slate-800">Catálogo de Arreglos Reales</h3>
+              <p class="text-[11px] text-slate-500">Toca cualquier diseño para personalizarlo o facturarlo</p>
+            </div>
+            <span id="catalog-count-badge" class="px-2.5 py-1 rounded-full bg-lavender-light text-lavender-dark text-[11px] font-bold">
+              4 diseños
+            </span>
+          </div>
+
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1" id="home-category-filters">
+            <button type="button" onclick="filterHomeGallery('Todos')" data-cat-filter="Todos" class="cat-filter-btn px-3.5 py-1.5 rounded-full bg-lavender text-white text-xs font-bold shrink-0">Todos</button>
+            <button type="button" onclick="filterHomeGallery('Cumpleaños')" data-cat-filter="Cumpleaños" class="cat-filter-btn px-3.5 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-semibold shrink-0">Cumpleaños</button>
+            <button type="button" onclick="filterHomeGallery('Graduación')" data-cat-filter="Graduación" class="cat-filter-btn px-3.5 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-semibold shrink-0">Graduación</button>
+            <button type="button" onclick="filterHomeGallery('Romántico')" data-cat-filter="Romántico" class="cat-filter-btn px-3.5 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-semibold shrink-0">Romántico</button>
+            <button type="button" onclick="filterHomeGallery('Especial')" data-cat-filter="Especial" class="cat-filter-btn px-3.5 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-semibold shrink-0">Especial</button>
+          </div>
+
+          <div id="home-real-gallery-grid" class="grid grid-cols-2 gap-3">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Install Home Screen Card -->
+        <div class="rounded-3xl bg-white p-4 border border-lavender/20 shadow-2xs flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-2xl bg-lavender-light text-lavender-dark flex items-center justify-center text-lg shrink-0">
+              📱
+            </div>
+            <div class="min-w-0">
+              <h4 class="font-bold text-xs text-slate-800">Guárdanos en tu Inicio</h4>
+              <p class="text-[11px] text-slate-500 leading-tight mt-0.5">Abre Nube de Pétalos como una app con nuestro logo.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onclick="openInstallGuideModal()"
+            class="min-h-[40px] px-3 py-2 rounded-xl bg-slate-900 text-white text-[11px] font-bold shrink-0 active:scale-95 transition"
+          >
+            Cómo instalar
+          </button>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 2: ARMAR MI RAMO (Volumetric 3D Preview + 4 Sub-Tabs)         -->
+      <!-- ================================================================= -->
+      <section id="view-armar" class="app-view hidden p-4 space-y-4">
+
+        <!-- Live 3D Volumetric Studio Preview Card -->
+        <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-lavender/20">
+          <div class="flex items-center justify-between gap-2 mb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-extrabold text-slate-800">Estudio 3D Volumétrico</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span id="armar-live-total" class="px-3 py-1 rounded-full bg-lavender-light text-lavender-dark text-xs font-extrabold">
+                $ 0 COP
+              </span>
+              <button
+                type="button"
+                onclick="resetBuilder()"
+                class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold"
+                title="Reiniciar diseño"
+              >
+                ↺
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive 3D Tilt Canvas + AI Photorealistic Stage -->
+          <div class="relative w-full h-[280px] rounded-2xl bg-slate-950 overflow-hidden shadow-inner border border-lavender/15">
+            <canvas
+              id="bouquet-photorealistic-canvas"
+              width="760"
+              height="760"
+              class="w-full h-full object-cover cursor-grab active:cursor-grabbing"
+            ></canvas>
+
+            <img
+              id="ai-generated-bouquet-img"
+              src=""
+              alt="Vista fotorrealista generada"
+              class="hidden absolute inset-0 w-full h-full object-cover"
+            />
+
+            <!-- AI Loading Overlay -->
+            <div id="ai-render-loader" class="hidden absolute inset-0 bg-slate-900/85 backdrop-blur-xs flex flex-col items-center justify-center text-white p-4 text-center z-20">
+              <div class="w-10 h-10 border-4 border-petal border-t-transparent rounded-full animate-spin mb-2.5"></div>
+              <p class="font-serif font-bold text-sm">Generando Foto Real 3D con IA...</p>
+              <p class="text-[11px] text-slate-300 mt-0.5">Iluminación de estudio, pliegues coreanos y pétalos satinados</p>
+            </div>
+
+            <!-- Toggle Back to Interactive Studio -->
+            <button
+              id="toggle-canvas-view-btn"
+              type="button"
+              onclick="hideAIOverlay()"
+              class="hidden absolute top-2.5 right-2.5 z-20 px-3 py-1.5 rounded-full bg-black/75 text-white text-[11px] font-bold"
+            >
+              🧊 Vista Estudio 3D
+            </button>
+
+            <!-- Top-left 3D Hint -->
+            <div class="absolute top-2.5 left-2.5 bg-black/55 text-white/90 px-2.5 py-1 rounded-full text-[10px] font-semibold pointer-events-none">
+              ↔ Desliza el ramo para inclinar en 3D
+            </div>
+
+            <!-- Summary Pill Bottom Left -->
+            <div class="absolute bottom-2.5 left-2.5 right-12 bg-black/65 text-white px-3 py-1.5 rounded-xl text-[11px] truncate">
+              <span id="preview-overlay-caption" class="font-semibold">7x Rosa Eterna • Lila / Morado</span>
+            </div>
+
+            <!-- Download Snapshot -->
+            <button
+              type="button"
+              onclick="downloadBouquetSnapshot()"
+              class="absolute bottom-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white/95 text-slate-800 shadow-md flex items-center justify-center text-xs font-bold"
+              title="Guardar imagen"
+            >
+              ⬇
+            </button>
+          </div>
+
+          <!-- Action Row: AI Photorealistic Render + Continue to Invoice -->
+          <div class="grid grid-cols-2 gap-2 mt-2.5">
+            <button
+              type="button"
+              onclick="generateAIPhotorealisticPreview()"
+              class="min-h-[42px] py-2 px-2.5 rounded-xl bg-gradient-to-r from-slate-900 via-lavender-dark to-slate-900 hover:opacity-95 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
+            >
+              <span>✨ Foto Real 3D (IA)</span>
+            </button>
+            <button
+              type="button"
+              onclick="switchMainTab('pedido')"
+              class="min-h-[42px] py-2 px-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
+            >
+              <span>🧾 Generar Factura</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Organized Sub-Step Pills -->
+        <div class="grid grid-cols-4 gap-1.5 bg-white p-1.5 rounded-2xl border border-lavender/15 shadow-2xs">
+          <button type="button" onclick="switchBuilderSubTab(1)" data-sub-btn="1" class="sub-tab-btn min-h-[40px] py-2 px-1 rounded-xl bg-gradient-to-r from-lavender to-petal text-white text-[11px] font-bold transition">
+            1. Flores
+          </button>
+          <button type="button" onclick="switchBuilderSubTab(2)" data-sub-btn="2" class="sub-tab-btn min-h-[40px] py-2 px-1 rounded-xl text-slate-600 hover:bg-lavender-light/50 text-[11px] font-semibold transition">
+            2. Papel
+          </button>
+          <button type="button" onclick="switchBuilderSubTab(3)" data-sub-btn="3" class="sub-tab-btn min-h-[40px] py-2 px-1 rounded-xl text-slate-600 hover:bg-lavender-light/50 text-[11px] font-semibold transition">
+            3. Extras
+          </button>
+          <button type="button" onclick="switchBuilderSubTab(4)" data-sub-btn="4" class="sub-tab-btn min-h-[40px] py-2 px-1 rounded-xl text-slate-600 hover:bg-lavender-light/50 text-[11px] font-semibold transition">
+            4. Tarjeta
+          </button>
+        </div>
+
+        <!-- SUB-PANEL 1: FLOWERS, QUANTITY & COLORS -->
+        <div id="builder-sub-1" class="builder-sub-panel space-y-4">
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-serif font-bold text-sm text-slate-800">Cantidad de Flores</span>
+              <div class="flex items-center gap-2 bg-creamSoft border border-lavender/30 rounded-2xl p-1">
+                <button type="button" onclick="adjustFlowerQuantity(-1)" class="w-9 h-9 rounded-xl bg-white text-lavender-dark font-extrabold shadow-2xs active:scale-95">-</button>
+                <span id="flower-qty-display" class="w-10 text-center font-extrabold text-sm text-slate-800">7</span>
+                <button type="button" onclick="adjustFlowerQuantity(1)" class="w-9 h-9 rounded-xl bg-lavender text-white font-extrabold shadow-2xs active:scale-95">+</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-6 gap-1.5" id="preset-qty-buttons"></div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-serif font-bold text-sm text-slate-800">Tipo de Flor Artesanal</h4>
+              <span class="text-[10px] font-bold text-lavender bg-lavender-light/60 px-2 py-0.5 rounded-full">
+                Toca "3D" para girar y ver medidas
+              </span>
+            </div>
+            <div id="flower-type-grid" class="space-y-2.5"></div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-serif font-bold text-sm text-slate-800">Colores (Máx. 3)</h4>
+              <span id="selected-colors-count" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-petal-light text-petal-dark">2 / 3</span>
+            </div>
+            <div id="color-swatches-grid" class="grid grid-cols-3 gap-2"></div>
+          </div>
+
+          <button type="button" onclick="switchBuilderSubTab(2)" class="w-full min-h-[46px] py-3 rounded-2xl bg-gradient-to-r from-lavender to-petal text-white font-bold text-xs shadow-sm">
+            Continuar a Papel y Moño →
+          </button>
+        </div>
+
+        <!-- SUB-PANEL 2: KOREAN PAPER & BOW -->
+        <div id="builder-sub-2" class="builder-sub-panel hidden space-y-4">
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs">
+            <h4 class="font-serif font-bold text-sm text-slate-800 mb-3">Papel Coreano o Caja Base</h4>
+            <div id="paper-style-grid" class="space-y-2.5"></div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs">
+            <h4 class="font-serif font-bold text-sm text-slate-800 mb-3">Color del Papel Envoltorio</h4>
+            <div id="paper-color-grid" class="grid grid-cols-3 gap-2"></div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs">
+            <h4 class="font-serif font-bold text-sm text-slate-800 mb-3">Moño o Cinta Decorativa</h4>
+            <div id="bow-style-grid" class="space-y-2"></div>
+          </div>
+
+          <button type="button" onclick="switchBuilderSubTab(3)" class="w-full min-h-[46px] py-3 rounded-2xl bg-gradient-to-r from-lavender to-petal text-white font-bold text-xs shadow-sm">
+            Continuar a Detalles Especiales →
+          </button>
+        </div>
+
+        <!-- SUB-PANEL 3: EXTRAS & DETAILS -->
+        <div id="builder-sub-3" class="builder-sub-panel hidden space-y-4">
+          <div id="extras-categories-container" class="space-y-4"></div>
+
+          <button type="button" onclick="switchBuilderSubTab(4)" class="w-full min-h-[46px] py-3 rounded-2xl bg-gradient-to-r from-lavender to-petal text-white font-bold text-xs shadow-sm">
+            Continuar a Dedicatoria →
+          </button>
+        </div>
+
+        <!-- SUB-PANEL 4: DEDICATION CARD & SASH TEXT -->
+        <div id="builder-sub-4" class="builder-sub-panel hidden space-y-4">
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs space-y-3">
+            <h4 class="font-serif font-bold text-sm text-slate-800">🎀 Frase en Cinta o Topper (Opcional)</h4>
+            <input
+              id="custom-sash-text"
+              type="text"
+              maxlength="32"
+              placeholder="Ej. Lo lograste mi princesa / Feliz Cumpleaños"
+              oninput="updateCustomerData()"
+              class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-lavender/30 bg-creamSoft text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-lavender"
+            />
+          </div>
+
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs space-y-3">
+            <h4 class="font-serif font-bold text-sm text-slate-800">💌 Tarjeta Dedicatoria (Gratis)</h4>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">De:</label>
+                <input id="card-from" type="text" placeholder="Tu nombre" oninput="updateCustomerData()" class="w-full min-h-[42px] px-3 py-2 rounded-xl border border-slate-200 bg-creamSoft text-xs" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">Para:</label>
+                <input id="card-to" type="text" placeholder="Nombre quien recibe" oninput="updateCustomerData()" class="w-full min-h-[42px] px-3 py-2 rounded-xl border border-slate-200 bg-creamSoft text-xs" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-1">Mensaje:</label>
+              <textarea id="card-message" rows="3" placeholder="Escribe tu mensaje especial..." oninput="updateCustomerData()" class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-creamSoft text-xs"></textarea>
+            </div>
+          </div>
+
+          <button type="button" onclick="switchMainTab('pedido')" class="w-full min-h-[48px] py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-md">
+            ✓ Ver Factura y Enviar Pedido
+          </button>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 3: ARMAR POR PRESUPUESTO                                      -->
+      <!-- ================================================================= -->
+      <section id="view-presupuesto" class="app-view hidden p-4 space-y-4">
+        <div class="bg-gradient-to-br from-lavender-light/90 via-petal-light/80 to-white rounded-3xl p-5 border border-lavender/20 shadow-xs">
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-white text-lavender-dark text-[10px] font-extrabold uppercase tracking-wider mb-1.5">
+            🧮 Cotizador Inteligente
+          </span>
+          <h2 class="font-serif text-xl font-bold text-slate-800">Arma tu ramo según tu presupuesto</h2>
+          <p class="text-xs text-slate-600 mt-1">
+            Escribe cuánto quieres invertir (ej. <strong>40000</strong>) y te mostramos 3 opciones reales de nuestro inventario.
+          </p>
+
+          <div class="mt-4 flex items-center gap-2">
+            <div class="relative flex-1">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-extrabold text-base">$</span>
+              <input
+                id="budget-input"
+                type="number"
+                inputmode="numeric"
+                min="15000"
+                step="1000"
+                value="40000"
+                placeholder="Ej. 40000"
+                class="w-full min-h-[48px] pl-8 pr-3 py-2.5 rounded-2xl border-2 border-lavender/40 bg-white text-slate-900 font-extrabold text-base focus:outline-none focus:border-lavender"
+              />
+            </div>
+            <button
+              type="button"
+              onclick="generateBudgetProposals()"
+              class="min-h-[48px] px-5 py-2.5 rounded-2xl bg-gradient-to-r from-lavender-dark to-petal-dark text-white font-bold text-xs shadow-md active:scale-95 transition shrink-0"
+            >
+              Calcular
+            </button>
+          </div>
+
+          <div class="grid grid-cols-5 gap-1.5 mt-3">
+            <button type="button" onclick="setBudgetAndCalculate(30000)" class="min-h-[36px] rounded-xl bg-white/90 text-lavender-dark font-bold text-[11px] border border-lavender/20">$30k</button>
+            <button type="button" onclick="setBudgetAndCalculate(40000)" class="min-h-[36px] rounded-xl bg-white/90 text-petal-dark font-bold text-[11px] border border-petal/20">$40k</button>
+            <button type="button" onclick="setBudgetAndCalculate(55000)" class="min-h-[36px] rounded-xl bg-white/90 text-skyPastel-dark font-bold text-[11px] border border-skyPastel/20">$55k</button>
+            <button type="button" onclick="setBudgetAndCalculate(75000)" class="min-h-[36px] rounded-xl bg-white/90 text-amber-800 font-bold text-[11px] border border-amber-200">$75k</button>
+            <button type="button" onclick="setBudgetAndCalculate(100000)" class="min-h-[36px] rounded-xl bg-white/90 text-slate-800 font-bold text-[11px] border border-slate-200">$100k</button>
+          </div>
+
+          <div class="mt-3">
+            <label class="block text-[11px] font-bold text-slate-600 mb-1.5">Preferencia de ocasión:</label>
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar" id="budget-occasion-pills">
+              <button type="button" onclick="selectBudgetOccasion('Romántico')" data-occ="Romántico" class="occ-pill px-3 py-1.5 rounded-full bg-lavender text-white text-[11px] font-bold shrink-0">💜 Romántico / Lila</button>
+              <button type="button" onclick="selectBudgetOccasion('Cumpleaños')" data-occ="Cumpleaños" class="occ-pill px-3 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-[11px] font-semibold shrink-0">🎂 Cumpleaños</button>
+              <button type="button" onclick="selectBudgetOccasion('Graduación')" data-occ="Graduación" class="occ-pill px-3 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-[11px] font-semibold shrink-0">🎓 Graduación</button>
+              <button type="button" onclick="selectBudgetOccasion('Tierno')" data-occ="Tierno" class="occ-pill px-3 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-[11px] font-semibold shrink-0">🧸 Tierno / Peluche</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="budget-proposals-list" class="space-y-4"></div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 4: FACTURA & PEDIDO                                           -->
+      <!-- ================================================================= -->
+      <section id="view-pedido" class="app-view hidden p-4 space-y-4">
+
+        <!-- Visual Receipt Card -->
+        <div class="bg-white rounded-3xl p-5 border border-lavender/20 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <img id="receipt-logo-img" src="" alt="Logo" class="w-10 h-10 rounded-full object-cover border border-lavender/30" />
+              <div>
+                <h2 class="font-serif font-bold text-base text-slate-800">Resumen de tu Ramo</h2>
+                <p class="text-[11px] text-slate-400">Nube de Pétalos • Cotización Oficial</p>
+              </div>
+            </div>
+            <button type="button" onclick="switchMainTab('armar')" class="text-xs font-bold text-lavender hover:underline">
+              Editar
+            </button>
+          </div>
+
+          <div id="quote-items-list" class="space-y-2.5 text-xs"></div>
+
+          <div class="pt-3 border-t border-dashed border-lavender/30 flex items-center justify-between">
+            <span class="font-bold text-xs text-slate-600">TOTAL ESTIMADO:</span>
+            <span id="quote-total-cop" class="text-2xl font-extrabold bg-gradient-to-r from-lavender-dark to-petal-dark bg-clip-text text-transparent">
+              $ 0 COP
+            </span>
+          </div>
+        </div>
+
+        <!-- Delivery & Customer Form -->
+        <div class="bg-white rounded-3xl p-5 border border-lavender/20 shadow-sm space-y-3.5">
+          <h3 class="font-serif font-bold text-base text-slate-800">🚚 Datos para la Factura y Entrega</h3>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">Tu Nombre Completo *</label>
+            <input id="customer-name" type="text" placeholder="Ej. Laura Gómez" oninput="updateCustomerData()" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-200 bg-creamSoft text-xs font-semibold" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Tu WhatsApp *</label>
+              <input id="customer-phone" type="tel" inputmode="tel" placeholder="310 555 1234" oninput="updateCustomerData()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl border border-slate-200 bg-creamSoft text-xs font-semibold" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Fecha de Entrega *</label>
+              <input id="delivery-date" type="date" oninput="updateCustomerData()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl border border-slate-200 bg-creamSoft text-xs font-semibold" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">Modalidad de Entrega</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="mode-pickup-btn" onclick="setDeliveryMode('Recoger en Tocancipá')" class="min-h-[44px] py-2 px-3 rounded-xl border-2 border-lavender bg-lavender-light/60 text-lavender-dark font-bold text-xs transition">
+                🏪 Recoger
+              </button>
+              <button type="button" id="mode-delivery-btn" onclick="setDeliveryMode('Envío a Domicilio')" class="min-h-[44px] py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-semibold text-xs transition">
+                🛵 Domicilio
+              </button>
+            </div>
+          </div>
+
+          <div id="delivery-address-wrapper" class="hidden">
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">Dirección / Barrio de Entrega:</label>
+            <input id="delivery-address" type="text" placeholder="Ej. Vereda / Barrio, Conjunto, Casa o Apto" oninput="updateCustomerData()" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-200 bg-creamSoft text-xs" />
+          </div>
+        </div>
+
+        <!-- Invoice & WhatsApp Checkout Buttons -->
+        <div class="space-y-2.5 pt-1">
+          <button
+            type="button"
+            onclick="openOfficialInvoiceModal()"
+            class="w-full min-h-[50px] py-3 px-5 rounded-2xl bg-gradient-to-r from-lavender-dark via-petal-dark to-lavender-dark text-white font-bold text-sm shadow-md active:scale-95 transition flex items-center justify-center gap-2"
+          >
+            <span>🧾 Generar Factura Oficial</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="sendWhatsAppOrder()"
+            class="w-full min-h-[50px] py-3 px-5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-sm shadow-lg active:scale-95 transition flex items-center justify-center gap-2"
+          >
+            <span>💬 Enviar Pedido por WhatsApp</span>
+          </button>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onclick="generateReceiptPNG()"
+              class="min-h-[44px] py-2.5 px-3 rounded-2xl bg-lavender-light/80 text-lavender-dark font-bold text-xs border border-lavender/20 active:scale-95 transition"
+            >
+              🖼 Guardar Factura HD
+            </button>
+            <button
+              type="button"
+              onclick="copyOrderSummary()"
+              class="min-h-[44px] py-2.5 px-3 rounded-2xl bg-white text-slate-700 font-bold text-xs border border-slate-200 active:scale-95 transition"
+            >
+              📋 Copiar Detalle
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- =================================================================== -->
+    <!-- FIXED BOTTOM MOBILE TAB BAR (4 NATIVE APP TABS)                     -->
+    <!-- =================================================================== -->
+    <nav aria-label="Navegación Principal" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-white/95 backdrop-blur-md border-t border-lavender/15 px-2 pt-1.5 pb-2 bottom-nav-safe shadow-[0_-4px_20px_rgba(147,51,234,0.08)]">
+      <div class="grid grid-cols-4 gap-1">
+        <button type="button" onclick="switchMainTab('inicio')" data-main-tab="inicio" class="main-nav-btn min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-2xl text-lavender-dark bg-lavender-light/60 font-bold transition">
+          <span class="text-base">🏠</span>
+          <span class="text-[10px]">Inicio</span>
+        </button>
+
+        <button type="button" onclick="switchMainTab('armar')" data-main-tab="armar" class="main-nav-btn min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-2xl text-slate-500 hover:bg-slate-50 font-semibold transition">
+          <span class="text-base">💐</span>
+          <span class="text-[10px]">Armar 3D</span>
+        </button>
+
+        <button type="button" onclick="switchMainTab('presupuesto')" data-main-tab="presupuesto" class="main-nav-btn min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-2xl text-slate-500 hover:bg-slate-50 font-semibold transition">
+          <span class="text-base">💰</span>
+          <span class="text-[10px]">Presupuesto</span>
+        </button>
+
+        <button type="button" onclick="switchMainTab('pedido')" data-main-tab="pedido" class="main-nav-btn relative min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-2xl text-slate-500 hover:bg-slate-50 font-semibold transition">
+          <span id="nav-order-badge" class="absolute top-1.5 right-5 min-w-[18px] h-[18px] px-1 rounded-full bg-petal text-white text-[10px] font-extrabold flex items-center justify-center shadow-2xs">
+            7
+          </span>
+          <span class="text-base">🧾</span>
+          <span class="text-[10px]">Factura</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: 3D INTERACTIVE PRODUCT INSPECTOR (360° Drag + Dimensions)      -->
+  <!-- ===================================================================== -->
+  <div id="product-3d-modal" class="hidden fixed inset-0 z-[92] bg-slate-950/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-3" onclick="closeProduct3DModal()">
+    <div class="bg-white rounded-3xl max-w-[440px] w-full overflow-hidden shadow-2xl border border-lavender/30" onclick="event.stopPropagation()">
+      <div class="px-4 py-3 bg-gradient-to-r from-lavender-light/60 via-petal-light/50 to-skyPastel-light/60 flex items-center justify-between border-b border-lavender/15">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="px-2 py-0.5 rounded-full bg-lavender-dark text-white text-[10px] font-extrabold uppercase">Vista 3D</span>
+          <h3 id="modal-3d-title" class="font-serif font-bold text-sm text-slate-800 truncate">Rosa Eterna Satinada</h3>
+        </div>
+        <button type="button" onclick="closeProduct3DModal()" class="w-8 h-8 rounded-full bg-white text-slate-600 flex items-center justify-center shadow-2xs font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- 3D Interactive Canvas Stage -->
+      <div class="relative w-full h-64 bg-gradient-to-b from-slate-900 via-[#28153b] to-slate-950 flex items-center justify-center overflow-hidden">
+        <canvas id="inspector-3d-canvas" width="440" height="256" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+        <img id="modal-3d-real-photo" src="" alt="Foto Real del Producto" class="hidden absolute inset-0 w-full h-full object-contain bg-slate-950" />
+
+        <!-- Dimension Callout Badge -->
+        <div class="absolute top-3 left-3 bg-black/65 text-white px-2.5 py-1 rounded-xl text-[10px] font-semibold border border-white/15">
+          📏 <span id="modal-3d-dimensions">Diámetro: 8.5 cm • Alto: 32 cm</span>
+        </div>
+
+        <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
+          <span class="bg-black/65 text-slate-200 px-2.5 py-1 rounded-full text-[10px]">
+            👆 Desliza para girar 360° en 3D
+          </span>
+          <button
+            id="modal-3d-toggle-photo-btn"
+            type="button"
+            onclick="toggleInspectorPhotoMode()"
+            class="hidden px-3 py-1 rounded-full bg-white/95 text-slate-900 text-[10px] font-extrabold shadow"
+          >
+            Ver Foto Real
+          </button>
+        </div>
+      </div>
+
+      <div class="p-4 space-y-3">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <p id="modal-3d-material" class="text-[11px] font-bold text-lavender-dark">Material: Cinta satinada doble cara + perla</p>
+            <p id="modal-3d-desc" class="text-xs text-slate-600 mt-1">Pétalos moldeados uno a uno con brillo sedoso y volumen real.</p>
+          </div>
+          <span id="modal-3d-price" class="px-3 py-1.5 rounded-2xl bg-lavender-light text-lavender-dark font-extrabold text-sm shrink-0">
+            $ 4.500 COP
+          </span>
+        </div>
+
+        <button
+          id="modal-3d-select-btn"
+          type="button"
+          class="w-full min-h-[46px] py-3 rounded-2xl bg-gradient-to-r from-lavender-dark to-petal-dark text-white font-bold text-xs shadow-md active:scale-95 transition"
+        >
+          Elegir este producto para mi ramo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: OFFICIAL INVOICE GENERATOR ("FACTURA DE VENTA / COTIZACIÓN")   -->
+  <!-- ===================================================================== -->
+  <div id="invoice-modal" class="hidden fixed inset-0 z-[94] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto" onclick="closeOfficialInvoiceModal()">
+    <div class="bg-white rounded-3xl max-w-[460px] w-full my-auto shadow-2xl border border-lavender/30 overflow-hidden" onclick="event.stopPropagation()">
+      <div class="no-print px-4 py-3 bg-slate-900 text-white flex items-center justify-between">
+        <span class="text-xs font-bold">🧾 Vista Previa de Factura Oficial</span>
+        <button type="button" onclick="closeOfficialInvoiceModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-xs font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Printable / Visual Invoice Sheet -->
+      <div id="official-invoice-sheet" class="p-5 bg-[#fffdf9] text-slate-800 space-y-4">
+        <div class="flex items-center justify-between gap-3 border-b-2 border-lavender/20 pb-3.5">
+          <div class="flex items-center gap-3">
+            <img id="invoice-logo-img" src="" alt="Logo Nube de Pétalos" class="w-16 h-16 rounded-full object-cover border-2 border-lavender/40 shadow-xs shrink-0" />
+            <div>
+              <h2 class="font-script text-3xl text-lavender-dark leading-none">Nube de Pétalos</h2>
+              <p class="text-[9px] font-extrabold tracking-[0.2em] uppercase text-slate-500 mt-1">Flores Eternas &amp; Detalles</p>
+              <p class="text-[10px] text-slate-500 mt-0.5">Tocancipá, Cundinamarca • WA: <span id="inv-store-wa">300 123 4567</span></p>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <span class="inline-block px-2.5 py-0.5 rounded-full bg-lavender-light text-lavender-dark text-[10px] font-extrabold uppercase">Factura</span>
+            <p id="inv-number" class="font-extrabold text-xs text-slate-900 mt-1">#NP-2026-0042</p>
+            <p id="inv-date" class="text-[10px] text-slate-500">19/11/2026</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 bg-white rounded-2xl p-3 border border-lavender/15">
+          <div class="text-[11px] space-y-1 min-w-0">
+            <p class="font-extrabold uppercase text-[10px] tracking-wider text-lavender-dark">Datos del Cliente</p>
+            <p><span class="text-slate-400">Cliente:</span> <strong id="inv-cust-name">Cliente Especial</strong></p>
+            <p><span class="text-slate-400">Teléfono:</span> <strong id="inv-cust-phone">Por confirmar</strong></p>
+            <p><span class="text-slate-400">Entrega:</span> <strong id="inv-delivery-info">Recoger en Tocancipá</strong></p>
+          </div>
+          <img id="inv-bouquet-thumb" src="" alt="Ramo 3D" class="w-20 h-20 rounded-xl object-cover border border-lavender/25 shadow-2xs shrink-0" />
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+          <table class="w-full text-left border-collapse text-[11px]">
+            <thead>
+              <tr class="bg-lavender-light/50 text-lavender-dark font-extrabold border-b border-lavender/20">
+                <th class="py-2 px-2.5">Descripción</th>
+                <th class="py-2 px-1.5 text-center">Cant.</th>
+                <th class="py-2 px-2 text-right">V. Unit</th>
+                <th class="py-2 px-2.5 text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="inv-items-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+
+        <div id="inv-card-note-box" class="hidden rounded-xl bg-petal-light/35 border border-petal/20 p-2.5 text-[11px] text-slate-700">
+          <p class="font-bold text-petal-dark">💌 Tarjeta Dedicatoria (Cortesía):</p>
+          <p id="inv-card-note-text" class="italic mt-0.5"></p>
+        </div>
+
+        <div class="bg-slate-900 text-white rounded-2xl p-3.5 flex items-center justify-between">
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-slate-300 font-bold">Total a Pagar (COP)</p>
+            <p class="text-[10px] text-emerald-300">Arreglo artesanal hecho a mano</p>
+          </div>
+          <p id="inv-grand-total" class="text-xl font-extrabold text-amber-300">$ 0 COP</p>
+        </div>
+      </div>
+
+      <div class="no-print p-4 bg-white border-t border-slate-100 space-y-2">
+        <button
+          type="button"
+          onclick="sendWhatsAppOrder()"
+          class="w-full min-h-[46px] py-2.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-sm active:scale-95 transition"
+        >
+          💬 Enviar Factura y Pedido por WhatsApp
+        </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="generateReceiptPNG()" class="min-h-[42px] py-2 px-3 rounded-xl bg-lavender-light text-lavender-dark font-bold text-xs">
+            ⬇ Descargar Imagen HD
+          </button>
+          <button type="button" onclick="window.print()" class="min-h-[42px] py-2 px-3 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs">
+            🖨 Imprimir / PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: HOME-SCREEN INSTALL INSTRUCTIONS                               -->
+  <!-- ===================================================================== -->
+  <div id="install-guide-modal" class="hidden fixed inset-0 z-[80] bg-slate-900/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-3" onclick="closeInstallGuideModal()">
+    <div class="bg-white rounded-3xl max-w-[440px] w-full p-6 shadow-2xl border border-lavender/25 space-y-4" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img id="install-modal-logo" src="" class="w-12 h-12 rounded-2xl object-cover border border-lavender/30 shadow-xs" />
+          <div>
+            <h3 class="font-serif font-bold text-lg text-slate-800">Instalar en tu Celular</h3>
+            <p class="text-xs text-slate-500">Acceso directo con nuestro logo en tu inicio</p>
+          </div>
+        </div>
+        <button onclick="closeInstallGuideModal()" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-600">
+        <div class="p-3.5 rounded-2xl bg-lavender-light/45 border border-lavender/20">
+          <p class="font-extrabold text-lavender-dark mb-1">🤖 En Android (Chrome):</p>
+          <p>1. Toca el menú de <strong>3 puntos (⋮)</strong> arriba a la derecha.<br />2. Selecciona <strong>"Agregar a la pantalla principal"</strong> o <strong>"Instalar aplicación"</strong>.</p>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-petal-light/45 border border-petal/20">
+          <p class="font-extrabold text-petal-dark mb-1">🍎 En iPhone (Safari):</p>
+          <p>1. Toca el botón <strong>Compartir (⬆)</strong> en la barra inferior.<br />2. Baja y elige <strong>"Agregar a inicio"</strong>.</p>
+        </div>
+      </div>
+
+      <button type="button" onclick="closeInstallGuideModal()" class="w-full min-h-[46px] py-3 rounded-2xl bg-gradient-to-r from-lavender-dark to-petal-dark text-white font-bold text-xs">
+        ¡Entendido!
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: OWNER PIN LOCK (Contraseña: 1109)                              -->
+  <!-- ===================================================================== -->
+  <div id="owner-pin-modal" class="hidden fixed inset-0 z-[85] bg-slate-900/75 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeOwnerPinModal()">
+    <div class="bg-white rounded-3xl max-w-xs w-full p-6 shadow-2xl border border-lavender/25 text-center relative" onclick="event.stopPropagation()">
+      <button onclick="closeOwnerPinModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold">✕</button>
+
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-lavender to-petal text-white mx-auto flex items-center justify-center text-2xl shadow-md mb-3">
+        🔒
+      </div>
+      <h3 class="font-serif text-lg font-bold text-slate-800">Acceso Dueños</h3>
+      <p class="text-xs text-slate-500 mt-1 mb-4">Ingresa la contraseña de administrador</p>
+
+      <form onsubmit="verifyOwnerPin(event)" class="space-y-3.5">
+        <input
+          id="owner-pin-input"
+          type="password"
+          inputmode="numeric"
+          maxlength="8"
+          placeholder="••••"
+          autocomplete="off"
+          class="w-full min-h-[50px] text-center tracking-[0.5em] text-2xl font-extrabold py-2.5 px-4 rounded-2xl border-2 border-lavender/40 bg-creamSoft focus:outline-none focus:border-lavender"
+        />
+        <p id="owner-pin-error" class="hidden text-xs font-bold text-rose-600">Contraseña incorrecta.</p>
+        <button type="submit" class="w-full min-h-[46px] py-3 rounded-2xl bg-gradient-to-r from-lavender-dark to-petal-dark text-white font-bold text-xs shadow-md">
+          Entrar al Inventario
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: OWNER DASHBOARD (INVENTARIO, FOTOS REALES, LOGO & RESPALDO)    -->
+  <!-- ===================================================================== -->
+  <div id="owner-dashboard-modal" class="hidden fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-0 sm:p-4">
+    <div class="bg-cream w-full max-w-3xl h-full sm:h-[90vh] sm:rounded-3xl flex flex-col shadow-2xl overflow-hidden">
+
+      <div class="bg-gradient-to-r from-slate-900 via-lavender-dark to-slate-900 text-white px-4 py-3.5 flex items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center text-lg">👑</span>
+          <div>
+            <h2 class="font-serif text-base font-bold leading-tight">Panel Dueño — Nube de Pétalos</h2>
+            <p class="text-[10px] text-lavender-light">Precios, Stock, Fotos Reales y Logo</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="saveAllOwnerChanges()" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs">
+            💾 Guardar
+          </button>
+          <button onclick="closeOwnerDashboard()" class="min-h-[38px] px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs">
+            Cerrar
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white border-b border-lavender/15 px-3 pt-2 flex gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+        <button onclick="switchOwnerTab('inventory')" data-owner-tab="inventory" class="owner-tab-btn px-3.5 py-2 rounded-t-xl text-xs font-bold border-b-2 border-lavender text-lavender-dark bg-lavender-light/35 shrink-0">
+          1. Precios &amp; Stock
+        </button>
+        <button onclick="switchOwnerTab('gallery')" data-owner-tab="gallery" class="owner-tab-btn px-3.5 py-2 rounded-t-xl text-xs font-semibold border-b-2 border-transparent text-slate-500 shrink-0">
+          2. Fotos Reales
+        </button>
+        <button onclick="switchOwnerTab('brand')" data-owner-tab="brand" class="owner-tab-btn px-3.5 py-2 rounded-t-xl text-xs font-semibold border-b-2 border-transparent text-slate-500 shrink-0">
+          3. Logo &amp; Tienda
+        </button>
+        <button onclick="switchOwnerTab('backup')" data-owner-tab="backup" class="owner-tab-btn px-3.5 py-2 rounded-t-xl text-xs font-semibold border-b-2 border-transparent text-slate-500 shrink-0">
+          4. Respaldo
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto flex-1 space-y-5">
+
+        <!-- OWNER TAB 1: INVENTORY & PRICES -->
+        <div id="owner-panel-inventory" class="space-y-5">
+          <div class="bg-white rounded-2xl p-4 border border-lavender/20 shadow-2xs space-y-3">
+            <h4 class="font-serif font-bold text-sm text-slate-800">➕ Agregar Nuevo Artículo al Inventario</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <select id="new-item-category" class="min-h-[40px] px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-creamSoft">
+                <option value="flowerTypes">Tipo de Flor Eterna</option>
+                <option value="paperStyles">Papel / Envoltura / Caja</option>
+                <option value="bowStyles">Moño / Cinta</option>
+                <option value="extra_mariposas">Extra: Mariposas y Luces</option>
+                <option value="extra_peluches">Extra: Peluches y Colección</option>
+                <option value="extra_chocolates">Extra: Chocolates y Dulces</option>
+                <option value="extra_toppers">Extra: Coronas y Toppers</option>
+              </select>
+              <input id="new-item-name" type="text" placeholder="Nombre del producto *" class="min-h-[40px] px-3 py-2 rounded-xl border border-slate-200 text-xs bg-creamSoft" />
+              <input id="new-item-price" type="number" step="500" placeholder="Precio COP (Ej. 5000) *" class="min-h-[40px] px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-creamSoft" />
+              <div class="flex gap-2">
+                <input id="new-item-stock" type="number" value="20" placeholder="Stock" class="w-24 min-h-[40px] px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-creamSoft" />
+                <button type="button" onclick="addNewInventoryItem()" class="flex-1 min-h-[40px] rounded-xl bg-lavender-dark text-white font-bold text-xs">
+                  + Agregar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="owner-inventory-tables" class="space-y-4"></div>
+        </div>
+
+        <!-- OWNER TAB 2: REAL BOUQUET PHOTOS GALLERY -->
+        <div id="owner-panel-gallery" class="hidden space-y-4">
+          <div class="bg-white rounded-2xl p-4 border border-lavender/20 shadow-2xs space-y-3">
+            <h4 class="font-serif font-bold text-sm text-slate-800">📸 Subir Foto Original de tus Ramos</h4>
+            <p class="text-xs text-slate-500">Estas fotos reales aparecerán en la pantalla de Inicio y como referencia en presupuestos.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <input id="gallery-photo-file" type="file" accept="image/*" class="text-xs text-slate-600 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-lavender-light file:text-lavender-dark" />
+              <input id="gallery-photo-title" type="text" placeholder="Nombre (Ej. Ramo Rosas Lila + Mariposa)" class="min-h-[40px] px-3 py-2 rounded-xl border border-slate-200 text-xs bg-creamSoft" />
+              <input id="gallery-photo-price" type="number" step="1000" value="40000" placeholder="Precio COP" class="min-h-[40px] px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-creamSoft" />
+              <select id="gallery-photo-category" class="min-h-[40px] px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-creamSoft">
+                <option value="Cumpleaños">Categoría: Cumpleaños</option>
+                <option value="Graduación">Categoría: Graduación</option>
+                <option value="Romántico">Categoría: Romántico</option>
+                <option value="Especial">Categoría: Especial</option>
+              </select>
+            </div>
+            <button type="button" onclick="uploadRealBouquetPhoto()" class="w-full min-h-[44px] py-2.5 rounded-xl bg-gradient-to-r from-lavender-dark to-petal-dark text-white font-bold text-xs shadow-xs">
+              ⬆ Publicar Foto en Catálogo Real
+            </button>
+          </div>
+
+          <div id="owner-gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+        </div>
+
+        <!-- OWNER TAB 3: LOGO & WHATSAPP -->
+        <div id="owner-panel-brand" class="hidden space-y-4">
+          <div class="bg-white rounded-2xl p-4 border border-lavender/20 space-y-3">
+            <h4 class="font-serif font-bold text-sm text-slate-800">Logo Oficial (App, Facturas e Inicio del Celular)</h4>
+            <p class="text-xs text-slate-500">Al subir tu logo aquí, se actualiza automáticamente en toda la app, facturas e ícono de pantalla de inicio.</p>
+            <div class="flex items-center gap-4">
+              <img id="owner-logo-preview" src="" class="w-20 h-20 rounded-full object-cover border-2 border-lavender shadow-sm" />
+              <label class="min-h-[44px] px-4 py-2.5 rounded-xl bg-lavender-light text-lavender-dark font-bold text-xs cursor-pointer flex items-center gap-2">
+                <span>🖼 Subir / Cambiar Logo</span>
+                <input type="file" accept="image/*" class="hidden" onchange="uploadCustomLogo(event)" />
+              </label>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 border border-lavender/20 space-y-3">
+            <h4 class="font-serif font-bold text-sm text-slate-800">WhatsApp de Pedidos</h4>
+            <input id="owner-whatsapp-field" type="tel" value="573001234567" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold bg-creamSoft" />
+          </div>
+        </div>
+
+        <!-- OWNER TAB 4: BACKUP -->
+        <div id="owner-panel-backup" class="hidden space-y-4">
+          <div class="bg-white rounded-2xl p-4 border border-lavender/20 space-y-3">
+            <h4 class="font-serif font-bold text-sm text-slate-800">Copia de Seguridad de tu Negocio</h4>
+            <p class="text-xs text-slate-500">Exporta todos tus precios, inventario y fotos subidas para pasarlas a otro celular.</p>
+            <div class="flex flex-col sm:flex-row gap-2.5">
+              <button type="button" onclick="exportOwnerBackup()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs">
+                ⬇ Descargar Respaldo (.json)
+              </button>
+              <label class="min-h-[44px] px-4 py-2.5 rounded-xl bg-lavender-light text-lavender-dark font-bold text-xs flex items-center justify-center cursor-pointer">
+                <span>⬆ Restaurar Respaldo (.json)</span>
+                <input type="file" accept=".json" class="hidden" onchange="importOwnerBackup(event)" />
+              </label>
+              <button type="button" onclick="resetCatalogToDefaults()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-rose-50 text-rose-700 font-bold text-xs">
+                ↺ Restaurar Fábrica
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX MODAL FOR VIEWING REAL PHOTOS -->
+  <div id="photo-lightbox" class="hidden fixed inset-0 z-[95] bg-black/85 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeLightbox()">
+    <div class="max-w-sm w-full bg-white rounded-3xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="Foto real" class="w-full max-h-[65vh] object-contain bg-slate-950" />
+      <div class="p-4 flex items-center justify-between gap-2">
+        <p id="lightbox-caption" class="font-serif font-bold text-xs text-slate-800"></p>
+        <button onclick="closeLightbox()" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Helpers -->
+  <textarea id="clipboard-helper" class="fixed -left-[9999px] top-0" aria-hidden="true"></textarea>
+  <canvas id="receipt-export-canvas" width="800" height="1140" class="hidden"></canvas>
+
+  <script>
+    // =========================================================================
+    // 1. PERSISTENCE KEYS & DEFAULT CATALOG (TOCANCIPÁ COP PRICING + 3D SPECS)
+    // =========================================================================
+    const STORAGE_KEY_CATALOG = 'nube_petalos_catalog_v5';
+    const STORAGE_KEY_GALLERY = 'nube_petalos_gallery_v5';
+    const STORAGE_KEY_LOGO = 'nube_petalos_logo_v5';
+    const STORAGE_KEY_WHATSAPP = 'nube_petalos_wa_v5';
+    const STORAGE_KEY_INVOICE_SEQ = 'nube_petalos_inv_seq_v5';
+    const OWNER_PIN = '1109';
+
+    const DEFAULT_CATALOG = {
+      flowerTypes: [
+        {
+          id: 'rosa-eterna-perla',
+          name: 'Rosa Eterna de Cinta con Perla',
+          desc: 'Pétalos de cinta satinada moldeados a mano con perla central.',
+          dimensions: 'Diámetro: 8.5 cm • Largo tallo: 32 cm',
+          material: 'Cinta satinada doble cara + perla nacarada',
+          unitPrice: 4500,
+          stock: 80,
+          active: true,
+          shape: 'rose-pearl',
+          photoUrl: '',
+        },
+        {
+          id: 'tulipan-satin',
+          name: 'Tulipán Eterno de Satín',
+          desc: 'Tulipán relleno de satín suave con hojas verdes estructuradas.',
+          dimensions: 'Alto botón: 7.5 cm • Ancho: 5.5 cm • Tallo: 30 cm',
+          material: 'Tela satín sedosa rellena + hojas verdes',
+          unitPrice: 4000,
+          stock: 60,
+          active: true,
+          shape: 'tulip',
+          photoUrl: '',
+        },
+        {
+          id: 'lirio-chenille',
+          name: 'Lirio Limpiapipas / Chenille',
+          desc: 'Pétalos aterciopelados con borde rizado y pistilos artesanales.',
+          dimensions: 'Envergadura: 14 cm • 6 pétalos + pistilos',
+          material: 'Chenille / limpiapipas aterciopelado premium',
+          unitPrice: 6500,
+          stock: 40,
+          active: true,
+          shape: 'lily',
+          photoUrl: '',
+        },
+        {
+          id: 'girasol-eterno',
+          name: 'Girasol / Margarita de Satín',
+          desc: 'Pétalos satinados puntiagudos con centro tejido artesanal.',
+          dimensions: 'Diámetro: 13 cm • Centro tejido 3D',
+          material: 'Cinta satinada brillante + centro tejido',
+          unitPrice: 6500,
+          stock: 35,
+          active: true,
+          shape: 'sunflower',
+          photoUrl: '',
+        },
+        {
+          id: 'rosa-escarchada',
+          name: 'Rosa Eterna Escarchada Gala',
+          desc: 'Cinta satinada con brillo sutil para arreglos de lujo.',
+          dimensions: 'Diámetro: 9 cm • Acabado destellos gala',
+          material: 'Cinta satinada escarchada + perla central',
+          unitPrice: 5500,
+          stock: 50,
+          active: true,
+          shape: 'rose-glitter',
+          photoUrl: '',
+        },
+      ],
+
+      presetQuantities: [1, 3, 5, 7, 12, 18],
+
+      flowerColors: [
+        { id: 'lila-pastel', name: 'Lila Pastel', hex: '#a78bfa', inner: '#ddd6fe', stroke: '#6d28d9', stock: 50, active: true },
+        { id: 'morado-uva', name: 'Morado Uva', hex: '#581c87', inner: '#7e22ce', stroke: '#3b0764', stock: 45, active: true },
+        { id: 'rosa-nube', name: 'Rosa Nube', hex: '#f48fb1', inner: '#fce7f3', stroke: '#be185d', stock: 55, active: true },
+        { id: 'azul-cielo', name: 'Azul Cielo', hex: '#60a5fa', inner: '#dbeafe', stroke: '#1d4ed8', stock: 40, active: true },
+        { id: 'azul-rey', name: 'Azul Rey', hex: '#1e40af', inner: '#3b82f6', stroke: '#172554', stock: 35, active: true },
+        { id: 'rojo-pasion', name: 'Rojo Pasión', hex: '#dc2626', inner: '#fca5a5', stroke: '#7f1d1d', stock: 50, active: true },
+        { id: 'blanco-perla', name: 'Blanco Perla', hex: '#fffdf9', inner: '#f1f5f9', stroke: '#94a3b8', stock: 40, active: true },
+        { id: 'negro-glitter', name: 'Negro Gala', hex: '#18181b', inner: '#3f3f46', stroke: '#09090b', stock: 30, active: true },
+        { id: 'amarillo-sol', name: 'Amarillo Sol', hex: '#facc15', inner: '#fef08a', stroke: '#a16207', stock: 30, active: true },
+      ],
+
+      paperStyles: [
+        { id: 'coreano-marmol-dorado', name: 'Papel Coreano Marmoleado Oro', price: 6000, stock: 50, active: true, desc: 'Pliegos coreanos con vetas doradas elegantes', photoUrl: '' },
+        { id: 'coreano-pastel-filo', name: 'Papel Coreano Pastel Borde Dorado', price: 5000, stock: 60, active: true, desc: 'Acabado mate sedoso con marco dorado', photoUrl: '' },
+        { id: 'coreano-negro-lujo', name: 'Papel Negro Lujo & Tul Brillo', price: 6500, stock: 40, active: true, desc: 'Pliegos negros con malla plateada', photoUrl: '' },
+        { id: 'caja-corazon-grado', name: 'Caja Corazón Rígida (Grado/Regalo)', price: 14000, stock: 15, active: true, desc: 'Caja corazón con detalles dorados', photoUrl: '' },
+      ],
+
+      paperColors: [
+        { id: 'blanco-marmol', name: 'Blanco Mármol', hex: '#fcfaf5', border: '#d4af37', active: true },
+        { id: 'lila-pastel', name: 'Lila Pastel', hex: '#e9d5ff', border: '#9333ea', active: true },
+        { id: 'rosa-petalo', name: 'Rosa Pétalo', hex: '#fbcfe8', border: '#db2777', active: true },
+        { id: 'turquesa-cielo', name: 'Turquesa', hex: '#bae6fd', border: '#0284c7', active: true },
+        { id: 'negro-lujo', name: 'Negro Mate', hex: '#1f1f23', border: '#d4af37', active: true },
+        { id: 'rojo-corazon', name: 'Rojo Pasión', hex: '#dc2626', border: '#facc15', active: true },
+      ],
+
+      bowStyles: [
+        { id: 'mono-organza-tornasol', name: 'Moño Organza Tornasol', price: 0, stock: 50, active: true, desc: 'Incluido — Cinta iridiscente pastel', photoUrl: '' },
+        { id: 'mono-satin-negro-oro', name: 'Moño Satín Filo Dorado', price: 2500, stock: 35, active: true, desc: 'Cinta satinada doble con bordes oro', photoUrl: '' },
+        { id: 'cinta-impresa-frase', name: 'Cinta Impresa Personalizada', price: 3500, stock: 25, active: true, desc: 'Banda cruzada con frase y corona', photoUrl: '' },
+      ],
+
+      extrasCategories: [
+        {
+          id: 'extra_mariposas',
+          category: 'Mariposas 3D y Luces',
+          items: [
+            { id: 'mariposa-dorada-calada', name: 'Mariposa 3D Dorada Calada', price: 3500, stock: 45, active: true, group: 'butterfly', color: '#eab308', dimensions: 'Ancho: 12 cm • Alas 3D doble capa', material: 'Cartulina espejo metalizada dorada', photoUrl: '' },
+            { id: 'mariposa-tornasol', name: 'Set 2 Mariposas Tornasol', price: 4500, stock: 35, active: true, group: 'butterfly', color: '#c084fc', dimensions: 'Ancho: 10 cm c/u • Efecto holográfico', material: 'Acetato iridiscente 3D', photoUrl: '' },
+            { id: 'luces-led', name: 'Guirnalda Luces LED Cálidas', price: 5500, stock: 30, active: true, group: 'led', dimensions: 'Longitud: 2 metros • 20 micro-LEDs', material: 'Alambre de cobre flexible con pilas incluidas', photoUrl: '' },
+          ],
+        },
+        {
+          id: 'extra_peluches',
+          category: 'Peluches y Colección',
+          items: [
+            { id: 'peluche-osito-grado', name: 'Osito Peluche Grado + Diploma', price: 16000, stock: 12, active: true, group: 'plush', dimensions: 'Alto: 18 cm • Incluye birrete y diploma', material: 'Felpa suave hipoalergénica', photoUrl: '' },
+            { id: 'peluche-cinnamoroll', name: 'Peluche Cinnamoroll / Ternura', price: 18000, stock: 10, active: true, group: 'plush', dimensions: 'Ancho: 20 cm • Moño satinado', material: 'Peluche importado ultra suave', photoUrl: '' },
+            { id: 'carrito-hotwheels', name: 'Carrito Colección (Hot Wheels)', price: 14000, stock: 15, active: true, group: 'car', dimensions: 'Escala 1:64 • Metal Die-Cast', material: 'Carrocería metálica original', photoUrl: '' },
+          ],
+        },
+        {
+          id: 'extra_chocolates',
+          category: 'Chocolates y Dulces',
+          items: [
+            { id: 'ferrero-x3', name: 'Chocolates Ferrero Rocher (x3)', price: 9500, stock: 25, active: true, group: 'choco', dimensions: '3 unidades en soporte individual', material: 'Chocolate con avellana y envoltura dorada', photoUrl: '' },
+            { id: 'ferrero-x6', name: 'Chocolates Ferrero Rocher (x6)', price: 18000, stock: 18, active: true, group: 'choco', dimensions: '6 unidades distribuidas en el ramo', material: 'Chocolate con avellana y envoltura dorada', photoUrl: '' },
+          ],
+        },
+        {
+          id: 'extra_toppers',
+          category: 'Coronas, Birretes y Toppers',
+          items: [
+            { id: 'topper-feliz-cumple', name: 'Topper Dorado "Feliz Cumpleaños"', price: 3500, stock: 30, active: true, group: 'topper', text: 'Feliz Cumpleaños', dimensions: 'Ancho: 15 cm • Acrílico espejo oro', material: 'Acrílico dorado cortado a láser', photoUrl: '' },
+            { id: 'topper-mi-graduacion', name: 'Birrete + Topper "Mi Graduación"', price: 4500, stock: 25, active: true, group: 'grad', text: 'Mi Graduación', dimensions: 'Birrete 9x9 cm + letrero grado', material: 'Foami escarchado + borla dorada', photoUrl: '' },
+            { id: 'corona-reina', name: 'Corona / Tiara Reina Brillante', price: 11000, stock: 14, active: true, group: 'crown', dimensions: 'Diámetro: 12 cm • Pedrería brillante', material: 'Aleación metálica con cristales', photoUrl: '' },
+          ],
+        },
+      ],
+    };
+
+    const DEFAULT_SHOWCASE_DESIGNS = [
+      {
+        id: 'preset-cumple-lila',
+        title: 'Ramo 7 Rosas Lila & Mariposa Oro',
+        price: 44500,
+        category: 'Cumpleaños',
+        isPreset: true,
+        config: {
+          flowerTypeId: 'rosa-eterna-perla',
+          quantity: 7,
+          selectedColorIds: ['lila-pastel', 'morado-uva'],
+          paperStyleId: 'coreano-marmol-dorado',
+          paperColorId: 'blanco-marmol',
+          bowStyleId: 'mono-organza-tornasol',
+          selectedExtraIds: ['mariposa-dorada-calada', 'topper-feliz-cumple'],
+        },
+      },
+      {
+        id: 'preset-grado-tulipanes',
+        title: 'Ramo Graduación Tulipanes Azul',
+        price: 45500,
+        category: 'Graduación',
+        isPreset: true,
+        config: {
+          flowerTypeId: 'tulipan-satin',
+          quantity: 9,
+          selectedColorIds: ['azul-cielo', 'blanco-perla'],
+          paperStyleId: 'coreano-pastel-filo',
+          paperColorId: 'turquesa-cielo',
+          bowStyleId: 'mono-organza-tornasol',
+          selectedExtraIds: ['topper-mi-graduacion'],
+        },
+      },
+      {
+        id: 'preset-reina-rojo',
+        title: 'Ramo Reina 7 Rosas Rojas & Corona',
+        price: 49000,
+        category: 'Romántico',
+        isPreset: true,
+        config: {
+          flowerTypeId: 'rosa-eterna-perla',
+          quantity: 7,
+          selectedColorIds: ['rojo-pasion'],
+          paperStyleId: 'coreano-negro-lujo',
+          paperColorId: 'negro-lujo',
+          bowStyleId: 'mono-satin-negro-oro',
+          selectedExtraIds: ['corona-reina'],
+        },
+      },
+      {
+        id: 'preset-lirios-rosa',
+        title: 'Ramo 5 Lirios Chenille & Luces LED',
+        price: 43000,
+        category: 'Especial',
+        isPreset: true,
+        config: {
+          flowerTypeId: 'lirio-chenille',
+          quantity: 5,
+          selectedColorIds: ['rosa-nube', 'blanco-perla'],
+          paperStyleId: 'coreano-pastel-filo',
+          paperColorId: 'rosa-petalo',
+          bowStyleId: 'mono-organza-tornasol',
+          selectedExtraIds: ['luces-led'],
+        },
+      },
+    ];
+
+    function loadCatalog() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY_CATALOG);
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+      return JSON.parse(JSON.stringify(DEFAULT_CATALOG));
+    }
+
+    function loadRealGallery() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY_GALLERY);
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+      return [];
+    }
+
+    let CATALOG = loadCatalog();
+    let REAL_GALLERY = loadRealGallery();
+    let deferredInstallPrompt = null;
+    let currentHomeCategoryFilter = 'Todos';
+    let currentBudgetOccasion = 'Romántico';
+    let studioTiltX = 0; // Interactive 3D tilt angle for bouquet studio
+
+    // =========================================================================
+    // 2. APPLICATION STATE
+    // =========================================================================
+    const state = {
+      mainTab: 'inicio',
+      builderSubTab: 1,
+      storeWhatsapp: localStorage.getItem(STORAGE_KEY_WHATSAPP) || '573001234567',
+      flowerTypeId: 'rosa-eterna-perla',
+      quantity: 7,
+      selectedColorIds: ['lila-pastel', 'morado-uva'],
+      paperStyleId: 'coreano-marmol-dorado',
+      paperColorId: 'blanco-marmol',
+      bowStyleId: 'mono-organza-tornasol',
+      selectedExtraIds: ['mariposa-dorada-calada', 'topper-feliz-cumple'],
+      customSashText: '',
+      cardFrom: '',
+      cardTo: '',
+      cardMessage: '',
+      customerName: '',
+      customerPhone: '',
+      deliveryDate: '',
+      deliveryMode: 'Recoger en Tocancipá',
+      deliveryAddress: '',
+      activeBudget: null,
+    };
+
+    // =========================================================================
+    // 3. CRISP CIRCULAR "NUBE DE PÉTALOS" BRAND LOGO GENERATOR (INSTANT LOAD)
+    // =========================================================================
+    function generateOfficialCircularLogoDataURL() {
+      const c = document.createElement('canvas');
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext('2d');
+
+      // Warm cream circular background
+      ctx.fillStyle = '#fffdf9';
+      ctx.beginPath();
+      ctx.arc(256, 256, 252, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Delicate dotted & petal wreath border matching user's circular logo
+      ctx.save();
+      ctx.strokeStyle = '#c084fc';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([4, 8]);
+      ctx.beginPath();
+      ctx.arc(256, 256, 224, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Pastel cloud aura in upper center
+      const cloudGrad = ctx.createLinearGradient(110, 120, 402, 270);
+      cloudGrad.addColorStop(0, '#e9d5ff');
+      cloudGrad.addColorStop(0.5, '#fbcfe8');
+      cloudGrad.addColorStop(1, '#bae6fd');
+      ctx.fillStyle = cloudGrad;
+      ctx.beginPath();
+      ctx.arc(256, 178, 66, 0, Math.PI * 2);
+      ctx.arc(190, 198, 52, 0, Math.PI * 2);
+      ctx.arc(322, 198, 52, 0, Math.PI * 2);
+      ctx.arc(225, 215, 48, 0, Math.PI * 2);
+      ctx.arc(287, 215, 48, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#c084fc';
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+
+      // Three stylized ribbon lilies/flowers (Purple left, Pink center, Blue right)
+      const blooms = [
+        { x: 204, y: 196, stemX: 224, c1: '#a855f7', c2: '#7e22ce' },
+        { x: 256, y: 168, stemX: 256, c1: '#f472b6', c2: '#db2777' },
+        { x: 308, y: 196, stemX: 288, c1: '#60a5fa', c2: '#2563eb' },
+      ];
+      blooms.forEach((b) => {
+        // Stem
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(b.x, b.y + 12);
+        ctx.quadraticCurveTo(b.stemX, 245, 256, 278);
+        ctx.stroke();
+
+        // Ribbon loops
+        for (let i = -2; i <= 2; i++) {
+          ctx.save();
+          ctx.translate(b.x, b.y);
+          ctx.rotate(i * 0.34);
+          const pg = ctx.createLinearGradient(0, -34, 0, 10);
+          pg.addColorStop(0, b.c1);
+          pg.addColorStop(1, b.c2);
+          ctx.fillStyle = pg;
+          ctx.beginPath();
+          ctx.ellipse(0, -16, 8, 22, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      });
+
+      // Script title "Nube de Pétalos" with purple-pink-blue gradient
+      const textGrad = ctx.createLinearGradient(90, 320, 422, 355);
+      textGrad.addColorStop(0, '#7e22ce');
+      textGrad.addColorStop(0.5, '#db2777');
+      textGrad.addColorStop(1, '#2563eb');
+      ctx.fillStyle = textGrad;
+      ctx.font = 'italic bold 56px Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Nube de Pétalos', 256, 336);
+
+      // Subtitle
+      ctx.fillStyle = '#334155';
+      ctx.font = 'bold 17px sans-serif';
+      ctx.fillText('FLORES ETERNAS & DETALLES', 256, 372);
+
+      // Bottom decorative ribbon bow
+      ctx.strokeStyle = '#a855f7';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(244, 428, 12, 6, -0.3, 0, Math.PI * 2);
+      ctx.ellipse(268, 428, 12, 6, 0.3, 0, Math.PI * 2);
+      ctx.stroke();
+
+      return c.toDataURL('image/png');
+    }
+
+    function updatePWAManifestAndIcons(logoDataUrl) {
+      const iconUrl = logoDataUrl || generateOfficialCircularLogoDataURL();
+      const appleLink = document.getElementById('apple-touch-icon-link');
+      if (appleLink) appleLink.href = iconUrl;
+
+      const manifest = {
+        name: 'Nube de Pétalos — Flores Eternas & Detalles',
+        short_name: 'Nube de Pétalos',
+        description: 'Configurador 3D y catálogo artesanal de ramos eternos en Tocancipá.',
+        start_url: window.location.href,
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#fffdf9',
+        theme_color: '#7e22ce',
+        icons: [
+          { src: iconUrl, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+          { src: iconUrl, sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+        ],
+      };
+
+      try {
+        const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+        const link = document.getElementById('pwa-manifest-link');
+        if (link) link.href = URL.createObjectURL(blob);
+      } catch (e) {}
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    function triggerInstallApp() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; });
+      } else {
+        openInstallGuideModal();
+      }
+    }
+
+    function openInstallGuideModal() {
+      document.getElementById('install-guide-modal').classList.remove('hidden');
+    }
+
+    function closeInstallGuideModal() {
+      document.getElementById('install-guide-modal').classList.add('hidden');
+    }
+
+    function applyBrandLogoEverywhere(dataUrl) {
+      const imgIds = [
+        'splash-logo-img',
+        'header-logo-img',
+        'hero-logo-img',
+        'receipt-logo-img',
+        'install-modal-logo',
+        'owner-logo-preview',
+        'invoice-logo-img',
+      ];
+      imgIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.src = dataUrl;
+      });
+    }
+
+    // =========================================================================
+    // 4. INSTANT BOOTSTRAP INITIALIZATION
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Render crisp circular brand logo immediately across all screens
+      const savedLogo = localStorage.getItem(STORAGE_KEY_LOGO);
+      const activeLogoUrl = savedLogo || generateOfficialCircularLogoDataURL();
+      applyBrandLogoEverywhere(activeLogoUrl);
+      updatePWAManifestAndIcons(activeLogoUrl);
+
+      // 2. Dismiss splash screen quickly (550ms) so app feels instantaneous
+      setTimeout(() => {
+        const splash = document.getElementById('app-splash-screen');
+        if (splash) {
+          splash.classList.add('opacity-0');
+          setTimeout(() => splash.remove(), 320);
+        }
+      }, 550);
+
+      // 3. Default tomorrow delivery date
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const defaultDate = tomorrow.toISOString().split('T')[0];
+      state.deliveryDate = defaultDate;
+      document.getElementById('delivery-date').value = defaultDate;
+
+      // 4. Bind interactive 3D tilt gesture on main bouquet studio canvas
+      bindBouquetStudio3DTilt();
+
+      ensureValidSelections();
+      renderHomeRealGallery();
+      renderAllBuilderControls();
+      generateBudgetProposals();
+      updateAllPreviews();
+    });
+
+    function formatCOP(amount) {
+      return '$ ' + Math.round(amount).toLocaleString('es-CO') + ' COP';
+    }
+
+    function compressImageToDataURL(file, maxDim, quality, callback) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          callback(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // =========================================================================
+    // 5. NAVIGATION & SELECTION VALIDATION
+    // =========================================================================
+    function switchMainTab(tabName) {
+      state.mainTab = tabName;
+      document.querySelectorAll('.app-view').forEach((el) => el.classList.add('hidden'));
+      const activeView = document.getElementById(`view-${tabName}`);
+      if (activeView) activeView.classList.remove('hidden');
+
+      document.querySelectorAll('.main-nav-btn').forEach((btn) => {
+        const isTarget = btn.getAttribute('data-main-tab') === tabName;
+        btn.className = isTarget
+          ? 'main-nav-btn relative min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-2xl text-lavender-dark bg-lavender-light/65 font-bold transition'
+          : 'main-nav-btn relative min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-2xl text-slate-500 hover:bg-slate-50 font-semibold transition';
+      });
+
+      if (tabName === 'armar') renderPhotorealisticBouquetCanvas();
+      if (tabName === 'pedido') renderQuoteSummary();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchBuilderSubTab(stepNum) {
+      state.builderSubTab = stepNum;
+      document.querySelectorAll('.builder-sub-panel').forEach((el) => el.classList.add('hidden'));
+      document.getElementById(`builder-sub-${stepNum}`).classList.remove('hidden');
+
+      document.querySelectorAll('.sub-tab-btn').forEach((btn) => {
+        const isCurrent = Number(btn.getAttribute('data-sub-btn')) === stepNum;
+        btn.className = isCurrent
+          ? 'sub-tab-btn min-h-[40px] py-2 px-1 rounded-xl bg-gradient-to-r from-lavender to-petal text-white text-[11px] font-bold transition'
+          : 'sub-tab-btn min-h-[40px] py-2 px-1 rounded-xl text-slate-600 hover:bg-lavender-light/50 text-[11px] font-semibold transition';
+      });
+    }
+
+    function ensureValidSelections() {
+      const activeFlowers = CATALOG.flowerTypes.filter((f) => f.active && f.stock > 0);
+      if (activeFlowers.length && !activeFlowers.some((f) => f.id === state.flowerTypeId)) {
+        state.flowerTypeId = activeFlowers[0].id;
+      }
+      const activePapers = CATALOG.paperStyles.filter((p) => p.active && p.stock > 0);
+      if (activePapers.length && !activePapers.some((p) => p.id === state.paperStyleId)) {
+        state.paperStyleId = activePapers[0].id;
+      }
+      const activeBows = CATALOG.bowStyles.filter((b) => b.active && b.stock > 0);
+      if (activeBows.length && !activeBows.some((b) => b.id === state.bowStyleId)) {
+        state.bowStyleId = activeBows[0].id;
+      }
+      const activeColors = CATALOG.flowerColors.filter((c) => c.active && c.stock > 0);
+      state.selectedColorIds = state.selectedColorIds.filter((id) => activeColors.some((c) => c.id === id));
+      if (!state.selectedColorIds.length && activeColors.length) {
+        state.selectedColorIds = [activeColors[0].id];
+      }
+    }
+
+    // =========================================================================
+    // 6. HOME REAL GALLERY SHOWCASE
+    // =========================================================================
+    function filterHomeGallery(cat) {
+      currentHomeCategoryFilter = cat;
+      document.querySelectorAll('.cat-filter-btn').forEach((btn) => {
+        const active = btn.getAttribute('data-cat-filter') === cat;
+        btn.className = active
+          ? 'cat-filter-btn px-3.5 py-1.5 rounded-full bg-lavender text-white text-xs font-bold shrink-0'
+          : 'cat-filter-btn px-3.5 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-semibold shrink-0';
+      });
+      renderHomeRealGallery();
+    }
+
+    function renderHomeRealGallery() {
+      const grid = document.getElementById('home-real-gallery-grid');
+      const combined = [
+        ...REAL_GALLERY.map((item) => ({ ...item, isRealPhoto: true })),
+        ...DEFAULT_SHOWCASE_DESIGNS,
+      ];
+      const filtered =
+        currentHomeCategoryFilter === 'Todos'
+          ? combined
+          : combined.filter((item) => item.category === currentHomeCategoryFilter);
+
+      document.getElementById('catalog-count-badge').textContent = `${filtered.length} diseños`;
+
+      grid.innerHTML = filtered
+        .map((item, index) => {
+          const thumbCanvasId = `home-showcase-canvas-${index}`;
+          return `
+          <div class="bg-white rounded-3xl overflow-hidden border border-lavender/15 shadow-2xs flex flex-col">
+            <div class="relative h-36 bg-slate-900 overflow-hidden">
+              ${
+                item.isRealPhoto
+                  ? `<img src="${item.dataUrl}" alt="${item.title}" onclick="openLightbox('${item.dataUrl}', '${item.title}')" class="w-full h-full object-cover cursor-pointer" />
+                     <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-extrabold shadow">Foto Real</span>`
+                  : `<canvas id="${thumbCanvasId}" width="320" height="320" class="w-full h-full object-cover"></canvas>
+                     <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-white text-[9px] font-bold">${item.category}</span>`
+              }
+            </div>
+            <div class="p-3 flex-1 flex flex-col justify-between gap-2">
+              <div>
+                <h4 class="font-bold text-xs text-slate-800 leading-snug line-clamp-2">${item.title}</h4>
+                <p class="text-xs font-extrabold text-lavender-dark mt-1">${formatCOP(item.price)}</p>
+              </div>
+              <button
+                type="button"
+                onclick="${item.isRealPhoto ? `orderRealPhotoDesign('${item.id}')` : `applyPresetDesign('${item.id}')`}"
+                class="w-full min-h-[36px] py-1.5 px-2.5 rounded-xl bg-lavender-light/80 hover:bg-lavender hover:text-white text-lavender-dark font-bold text-[11px] transition active:scale-95"
+              >
+                ${item.isRealPhoto ? 'Pedir igual' : 'Personalizar 3D'}
+              </button>
+            </div>
+          </div>
+        `;
+        })
+        .join('');
+
+      filtered.forEach((item, index) => {
+        if (!item.isRealPhoto) {
+          const c = document.getElementById(`home-showcase-canvas-${index}`);
+          if (c) renderBouquetToTargetCanvas(c, item.config, 0);
+        }
+      });
+    }
+
+    function applyPresetDesign(presetId) {
+      const preset = DEFAULT_SHOWCASE_DESIGNS.find((p) => p.id === presetId);
+      if (!preset) return;
+      Object.assign(state, JSON.parse(JSON.stringify(preset.config)));
+      document.getElementById('flower-qty-display').textContent = state.quantity;
+      hideAIOverlay();
+      renderAllBuilderControls();
+      updateAllPreviews();
+      switchMainTab('armar');
+      showToast(`Diseño "${preset.title}" cargado en Estudio 3D.`, 'success');
+    }
+
+    function orderRealPhotoDesign(realId) {
+      const item = REAL_GALLERY.find((r) => r.id === realId);
+      if (!item) return;
+      state.customSashText = item.title;
+      document.getElementById('custom-sash-text').value = item.title;
+      switchMainTab('pedido');
+      showToast(`Referencia "${item.title}" seleccionada.`, 'success');
+    }
+
+    // =========================================================================
+    // 7. BUDGET RECOMMENDER ("ARMAR POR PRESUPUESTO" - e.g. $40.000)
+    // =========================================================================
+    function jumpToBudget(amount) {
+      document.getElementById('budget-input').value = amount;
+      switchMainTab('presupuesto');
+      generateBudgetProposals();
+    }
+
+    function setBudgetAndCalculate(amount) {
+      document.getElementById('budget-input').value = amount;
+      generateBudgetProposals();
+    }
+
+    function selectBudgetOccasion(occ) {
+      currentBudgetOccasion = occ;
+      document.querySelectorAll('.occ-pill').forEach((btn) => {
+        const active = btn.getAttribute('data-occ') === occ;
+        btn.className = active
+          ? 'occ-pill px-3 py-1.5 rounded-full bg-lavender text-white text-[11px] font-bold shrink-0'
+          : 'occ-pill px-3 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 text-[11px] font-semibold shrink-0';
+      });
+      generateBudgetProposals();
+    }
+
+    let CURRENT_BUDGET_OPTIONS = [];
+
+    function generateBudgetProposals() {
+      const rawBudget = parseInt(document.getElementById('budget-input').value, 10);
+      const budget = isNaN(rawBudget) || rawBudget < 15000 ? 40000 : rawBudget;
+
+      const availableFlowers = CATALOG.flowerTypes.filter((f) => f.active && f.stock > 0);
+      const availablePapers = CATALOG.paperStyles.filter((p) => p.active && p.stock > 0);
+      const allExtras = CATALOG.extrasCategories.flatMap((c) => c.items).filter((e) => e.active && e.stock > 0);
+
+      const primaryRose = availableFlowers.find((f) => f.id === 'rosa-eterna-perla') || availableFlowers[0];
+      const tulipFlower = availableFlowers.find((f) => f.id === 'tulipan-satin') || primaryRose;
+      const lilyFlower = availableFlowers.find((f) => f.id === 'lirio-chenille') || primaryRose;
+
+      const standardPaper = availablePapers.find((p) => p.id === 'coreano-pastel-filo') || availablePapers[0];
+      const marblePaper = availablePapers.find((p) => p.id === 'coreano-marmol-dorado') || standardPaper;
+
+      const occasionColors = {
+        Romántico: { colors: ['lila-pastel', 'morado-uva'], paperCol: 'blanco-marmol' },
+        Cumpleaños: { colors: ['rosa-nube', 'lila-pastel'], paperCol: 'rosa-petalo' },
+        Graduación: { colors: ['azul-cielo', 'blanco-perla'], paperCol: 'turquesa-cielo' },
+        Tierno: { colors: ['lila-pastel', 'blanco-perla'], paperCol: 'lila-pastel' },
+      };
+      const theme = occasionColors[currentBudgetOccasion] || occasionColors.Romántico;
+
+      const proposals = [];
+
+      // Option 1: Classic Maximum Flowers
+      const rem1 = Math.max(primaryRose.unitPrice, budget - standardPaper.price);
+      const qty1 = Math.max(1, Math.min(24, Math.floor(rem1 / primaryRose.unitPrice)));
+      const total1 = qty1 * primaryRose.unitPrice + standardPaper.price;
+      proposals.push({
+        badge: 'Opción 1 • Más Flores',
+        title: `Ramo Clásico de ${qty1} ${primaryRose.name.split(' ')[0]}s`,
+        total: total1,
+        config: {
+          flowerTypeId: primaryRose.id,
+          quantity: qty1,
+          selectedColorIds: theme.colors,
+          paperStyleId: standardPaper.id,
+          paperColorId: theme.paperCol,
+          bowStyleId: 'mono-organza-tornasol',
+          selectedExtraIds: [],
+        },
+        summary: `${qty1}x ${primaryRose.name} + ${standardPaper.name} + Moño Organza`,
+      });
+
+      // Option 2: Balanced Flowers + Butterfly / Topper Detail
+      const preferredExtra =
+        currentBudgetOccasion === 'Graduación'
+          ? allExtras.find((e) => e.id === 'topper-mi-graduacion')
+          : allExtras.find((e) => e.id === 'mariposa-dorada-calada') || allExtras[0];
+      const extraCost2 = preferredExtra ? preferredExtra.price : 0;
+      const rem2 = Math.max(tulipFlower.unitPrice, budget - marblePaper.price - extraCost2);
+      const qty2 = Math.max(1, Math.min(20, Math.floor(rem2 / tulipFlower.unitPrice)));
+      const total2 = qty2 * tulipFlower.unitPrice + marblePaper.price + extraCost2;
+      proposals.push({
+        badge: 'Opción 2 • Recomendada',
+        title: `Ramo ${qty2} ${tulipFlower.name.split(' ')[0]}es + Detalle Especial`,
+        total: total2,
+        config: {
+          flowerTypeId: tulipFlower.id,
+          quantity: qty2,
+          selectedColorIds: theme.colors,
+          paperStyleId: marblePaper.id,
+          paperColorId: theme.paperCol,
+          bowStyleId: 'mono-organza-tornasol',
+          selectedExtraIds: preferredExtra ? [preferredExtra.id] : [],
+        },
+        summary: `${qty2}x ${tulipFlower.name} + ${marblePaper.name}${preferredExtra ? ' + ' + preferredExtra.name : ''}`,
+      });
+
+      // Option 3: Luxury / Plush / LED
+      const specialExtra =
+        currentBudgetOccasion === 'Tierno' && budget >= 35000
+          ? allExtras.find((e) => e.id === 'peluche-cinnamoroll') || allExtras.find((e) => e.id === 'luces-led')
+          : allExtras.find((e) => e.id === 'luces-led') || preferredExtra;
+      const extraCost3 = specialExtra ? specialExtra.price : 0;
+      const rem3 = Math.max(lilyFlower.unitPrice, budget - standardPaper.price - extraCost3);
+      const qty3 = Math.max(1, Math.min(18, Math.floor(rem3 / lilyFlower.unitPrice)));
+      const total3 = qty3 * lilyFlower.unitPrice + standardPaper.price + extraCost3;
+      proposals.push({
+        badge: 'Opción 3 • Estilo Boutique',
+        title: `Ramo Artesanal ${qty3} ${lilyFlower.name.split(' ')[0]}s`,
+        total: total3,
+        config: {
+          flowerTypeId: lilyFlower.id,
+          quantity: qty3,
+          selectedColorIds: theme.colors,
+          paperStyleId: standardPaper.id,
+          paperColorId: theme.paperCol,
+          bowStyleId: 'mono-organza-tornasol',
+          selectedExtraIds: specialExtra ? [specialExtra.id] : [],
+        },
+        summary: `${qty3}x ${lilyFlower.name} + ${standardPaper.name}${specialExtra ? ' + ' + specialExtra.name : ''}`,
+      });
+
+      CURRENT_BUDGET_OPTIONS = proposals;
+      const list = document.getElementById('budget-proposals-list');
+      list.innerHTML = proposals
+        .map(
+          (prop, idx) => `
+        <div class="bg-white rounded-3xl p-4 border border-lavender/20 shadow-xs space-y-3">
+          <div class="flex items-center gap-3">
+            <canvas id="budget-mini-canvas-${idx}" width="220" height="220" class="w-24 h-24 rounded-2xl bg-slate-900 object-cover shrink-0 border border-lavender/20"></canvas>
+            <div class="min-w-0 flex-1">
+              <span class="inline-block px-2 py-0.5 rounded-full bg-lavender-light text-lavender-dark text-[10px] font-extrabold">
+                ${prop.badge}
+              </span>
+              <h4 class="font-serif font-bold text-sm text-slate-800 leading-snug mt-1">${prop.title}</h4>
+              <p class="text-[11px] text-slate-500 mt-0.5 line-clamp-2">${prop.summary}</p>
+              <p class="text-base font-extrabold text-petal-dark mt-1">${formatCOP(prop.total)}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onclick="applyBudgetOption(${idx}, 'armar')"
+              class="min-h-[40px] py-2 px-3 rounded-xl bg-lavender-light/80 hover:bg-lavender-light text-lavender-dark font-bold text-xs transition"
+            >
+              Personalizar 3D
+            </button>
+            <button
+              type="button"
+              onclick="applyBudgetOption(${idx}, 'pedido')"
+              class="min-h-[40px] py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition"
+            >
+              Generar Factura
+            </button>
+          </div>
+        </div>
+      `
+        )
+        .join('');
+
+      proposals.forEach((prop, idx) => {
+        const c = document.getElementById(`budget-mini-canvas-${idx}`);
+        if (c) renderBouquetToTargetCanvas(c, prop.config, 0);
+      });
+    }
+
+    function applyBudgetOption(idx, targetTab) {
+      const chosen = CURRENT_BUDGET_OPTIONS[idx];
+      if (!chosen) return;
+      Object.assign(state, JSON.parse(JSON.stringify(chosen.config)));
+      state.activeBudget = parseInt(document.getElementById('budget-input').value, 10) || chosen.total;
+      document.getElementById('flower-qty-display').textContent = state.quantity;
+      hideAIOverlay();
+      renderAllBuilderControls();
+      updateAllPreviews();
+      switchMainTab(targetTab);
+      showToast(`¡${chosen.badge} aplicada!`, 'success');
+    }
+
+    // =========================================================================
+    // 8. BUILDER CONTROLS & 3D PBR THUMBNAILS
+    // =========================================================================
+    function renderAllBuilderControls() {
+      renderPresetQuantities();
+      renderFlowerTypes();
+      renderColorSwatches();
+      renderPaperAndBow();
+      renderExtras();
+    }
+
+    function renderPresetQuantities() {
+      document.getElementById('preset-qty-buttons').innerHTML = CATALOG.presetQuantities
+        .map((q) => {
+          const active = state.quantity === q;
+          return `<button type="button" onclick="setFlowerQuantity(${q})" class="min-h-[36px] rounded-xl text-xs font-extrabold border transition ${
+            active ? 'bg-lavender text-white border-lavender' : 'bg-creamSoft text-slate-700 border-slate-200'
+          }">${q}</button>`;
+        })
+        .join('');
+    }
+
+    function generate3DItemThumbnailDataURL(item, kind) {
+      if (item.photoUrl) return item.photoUrl;
+      const c = document.createElement('canvas');
+      c.width = 160;
+      c.height = 160;
+      const ctx = c.getContext('2d');
+
+      const bg = ctx.createRadialGradient(80, 65, 10, 80, 80, 85);
+      bg.addColorStop(0, '#fdf4ff');
+      bg.addColorStop(0.65, '#f3e8ff');
+      bg.addColorStop(1, '#e2e8f0');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, 160, 160);
+
+      // 3D Floor Shadow
+      ctx.fillStyle = 'rgba(30, 27, 75, 0.16)';
+      ctx.beginPath();
+      ctx.ellipse(80, 136, 44, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const col =
+        item.shape === 'lily'
+          ? { hex: '#f472b6', inner: '#fbcfe8', stroke: '#be185d' }
+          : item.shape === 'tulip'
+          ? { hex: '#60a5fa', inner: '#dbeafe', stroke: '#1d4ed8' }
+          : item.shape === 'sunflower'
+          ? { hex: '#facc15', inner: '#fef08a', stroke: '#a16207' }
+          : { hex: '#9333ea', inner: '#e9d5ff', stroke: '#581c87' };
+
+      if (kind === 'flower') {
+        if (item.shape === 'tulip') drawPhotorealisticTulip(ctx, 80, 78, 1.35, col);
+        else if (item.shape === 'lily') drawPhotorealisticChenilleLily(ctx, 80, 80, 1.25, col);
+        else if (item.shape === 'sunflower') drawPhotorealisticSatinSunflower(ctx, 80, 80, 1.25, col);
+        else drawPhotorealisticSatinRose(ctx, 80, 80, 1.32, col, true, item.shape === 'rose-glitter');
+      } else if (kind === 'extra') {
+        if (item.group === 'butterfly') drawFiligreeButterfly3D(ctx, 80, 80, -0.2, 1.25, item.color || '#eab308');
+        else if (item.group === 'crown') drawRealisticTiara(ctx, 80, 82);
+        else if (item.group === 'grad') drawGraduationCapTopper(ctx, 80, 86);
+        else if (item.group === 'choco') drawFerreroChocolates(ctx, 80, 82);
+        else if (item.group === 'plush') drawCutePlushAccent(ctx, 80, 80, item.id);
+        else if (item.group === 'led') {
+          ctx.fillStyle = '#1e1b4b';
+          ctx.fillRect(0, 0, 160, 160);
+          [[45, 50], [115, 55], [80, 82], [50, 112], [112, 108]].forEach(([lx, ly]) => {
+            const g = ctx.createRadialGradient(lx, ly, 2, lx, ly, 22);
+            g.addColorStop(0, '#ffffff');
+            g.addColorStop(0.5, 'rgba(254,240,138,0.9)');
+            g.addColorStop(1, 'rgba(254,240,138,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(lx, ly, 22, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        } else {
+          drawGoldAcrylicTopper(ctx, 80, 82, item.text || 'Detalle');
+        }
+      }
+
+      return c.toDataURL('image/png');
+    }
+
+    function renderFlowerTypes() {
+      const container = document.getElementById('flower-type-grid');
+      container.innerHTML = CATALOG.flowerTypes
+        .filter((f) => f.active)
+        .map((ft) => {
+          const active = ft.id === state.flowerTypeId;
+          const out = ft.stock <= 0;
+          const thumbSrc = generate3DItemThumbnailDataURL(ft, 'flower');
+
+          return `
+          <div
+            class="w-full p-2.5 rounded-2xl border-2 transition flex items-center gap-3 ${
+              out
+                ? 'opacity-45 border-slate-100 bg-slate-50'
+                : active
+                ? 'border-lavender bg-lavender-light/35 shadow-2xs'
+                : 'border-slate-100 bg-white hover:border-lavender/40'
+            }"
+          >
+            <button
+              type="button"
+              ${out ? 'disabled' : `onclick="selectFlowerType('${ft.id}')"`}
+              class="flex-1 flex items-center gap-3 text-left min-w-0"
+            >
+              <img src="${thumbSrc}" alt="${ft.name}" class="w-14 h-14 rounded-2xl object-cover shrink-0 border border-lavender/20 shadow-2xs" />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1.5">
+                  <span class="font-bold text-xs text-slate-800 truncate">${ft.name}</span>
+                  <span class="text-xs font-extrabold text-lavender-dark shrink-0">${formatCOP(ft.unitPrice)}</span>
+                </div>
+                <p class="text-[11px] text-slate-500 truncate mt-0.5">${ft.desc}</p>
+                <p class="text-[10px] font-semibold text-lavender mt-0.5">${ft.dimensions || 'Tamaño artesanal'}</p>
+              </div>
+            </button>
+            <button
+              type="button"
+              onclick="openProduct3DInspector('flower', '${ft.id}')"
+              class="w-10 h-10 rounded-xl bg-slate-900 hover:bg-lavender-dark text-white flex flex-col items-center justify-center shrink-0 active:scale-95 transition shadow-2xs"
+              title="Girar en 3D y ver medidas"
+            >
+              <span class="text-[11px] leading-none">🧊</span>
+              <span class="text-[9px] font-extrabold mt-0.5">3D</span>
+            </button>
+          </div>
+        `;
+        })
+        .join('');
+    }
+
+    function selectFlowerType(id) {
+      state.flowerTypeId = id;
+      hideAIOverlay();
+      renderFlowerTypes();
+      updateAllPreviews();
+    }
+
+    function renderColorSwatches() {
+      document.getElementById('selected-colors-count').textContent = `${state.selectedColorIds.length} / 3`;
+      document.getElementById('color-swatches-grid').innerHTML = CATALOG.flowerColors
+        .filter((c) => c.active)
+        .map((c) => {
+          const selected = state.selectedColorIds.includes(c.id);
+          const out = c.stock <= 0;
+          return `
+          <button
+            type="button"
+            ${out ? 'disabled' : `onclick="toggleFlowerColor('${c.id}')"`}
+            class="min-h-[44px] p-2 rounded-2xl border-2 flex items-center gap-2 text-left transition ${
+              out ? 'opacity-40 border-slate-100' : selected ? 'border-lavender bg-lavender-light/40' : 'border-slate-100 bg-white'
+            }"
+          >
+            <span class="w-6 h-6 rounded-full shrink-0 border shadow-inner" style="background: radial-gradient(circle at 30% 30%, ${c.inner}, ${c.hex}); border-color: ${c.stroke}"></span>
+            <span class="text-[11px] font-bold text-slate-700 truncate">${c.name}</span>
+          </button>
+        `;
+        })
+        .join('');
+    }
+
+    function renderPaperAndBow() {
+      document.getElementById('paper-style-grid').innerHTML = CATALOG.paperStyles
+        .filter((p) => p.active)
+        .map((ps) => {
+          const active = ps.id === state.paperStyleId;
+          return `
+          <button
+            type="button"
+            onclick="selectPaperStyle('${ps.id}')"
+            class="w-full min-h-[54px] p-3 rounded-2xl border-2 text-left transition flex items-center justify-between gap-2 ${
+              active ? 'border-lavender bg-lavender-light/35' : 'border-slate-100 bg-white'
+            }"
+          >
+            <div class="min-w-0">
+              <p class="font-bold text-xs text-slate-800 truncate">${ps.name}</p>
+              <p class="text-[11px] text-slate-500 truncate">${ps.desc}</p>
+            </div>
+            <span class="text-xs font-extrabold text-lavender-dark shrink-0">${formatCOP(ps.price)}</span>
+          </button>
+        `;
+        })
+        .join('');
+
+      document.getElementById('paper-color-grid').innerHTML = CATALOG.paperColors
+        .filter((pc) => pc.active)
+        .map((pc) => {
+          const active = pc.id === state.paperColorId;
+          return `
+          <button
+            type="button"
+            onclick="selectPaperColor('${pc.id}')"
+            class="min-h-[42px] p-2 rounded-xl border-2 flex items-center gap-2 transition ${
+              active ? 'border-lavender bg-lavender-light/35' : 'border-slate-100 bg-white'
+            }"
+          >
+            <span class="w-5 h-5 rounded-md border shrink-0" style="background:${pc.hex}; border-color:${pc.border}"></span>
+            <span class="text-[11px] font-bold text-slate-700 truncate">${pc.name}</span>
+          </button>
+        `;
+        })
+        .join('');
+
+      document.getElementById('bow-style-grid').innerHTML = CATALOG.bowStyles
+        .filter((b) => b.active)
+        .map((bw) => {
+          const active = bw.id === state.bowStyleId;
+          return `
+          <button
+            type="button"
+            onclick="selectBowStyle('${bw.id}')"
+            class="w-full min-h-[48px] p-3 rounded-2xl border-2 text-left flex items-center justify-between gap-2 transition ${
+              active ? 'border-lavender bg-lavender-light/35' : 'border-slate-100 bg-white'
+            }"
+          >
+            <span class="text-xs font-bold text-slate-800">${bw.name}</span>
+            <span class="text-xs font-extrabold text-lavender-dark">${bw.price === 0 ? 'Incluido' : '+' + formatCOP(bw.price)}</span>
+          </button>
+        `;
+        })
+        .join('');
+    }
+
+    function renderExtras() {
+      document.getElementById('extras-categories-container').innerHTML = CATALOG.extrasCategories
+        .map((cat) => {
+          const items = cat.items.filter((i) => i.active);
+          if (!items.length) return '';
+          return `
+          <div class="bg-white rounded-3xl p-4 border border-lavender/15 shadow-2xs space-y-2.5">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">${cat.category}</h4>
+            <div class="space-y-2">
+              ${items
+                .map((item) => {
+                  const selected = state.selectedExtraIds.includes(item.id);
+                  const out = item.stock <= 0;
+                  const thumbSrc = generate3DItemThumbnailDataURL(item, 'extra');
+
+                  return `
+                  <div
+                    class="w-full min-h-[54px] p-2 rounded-2xl border-2 transition flex items-center justify-between gap-2 ${
+                      out
+                        ? 'opacity-40 border-slate-100'
+                        : selected
+                        ? 'border-lavender bg-lavender-light/40'
+                        : 'border-slate-100 bg-white'
+                    }"
+                  >
+                    <button
+                      type="button"
+                      ${out ? 'disabled' : `onclick="toggleExtra('${item.id}')"`}
+                      class="flex-1 flex items-center gap-2.5 text-left min-w-0"
+                    >
+                      <img src="${thumbSrc}" alt="${item.name}" class="w-11 h-11 rounded-xl object-cover shrink-0 border border-lavender/15" />
+                      <div class="min-w-0 flex-1">
+                        <p class="font-bold text-xs text-slate-800 truncate">${item.name}</p>
+                        <p class="text-[11px] font-extrabold text-lavender-dark">${out ? 'Agotado' : '+' + formatCOP(item.price)}</p>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onclick="openProduct3DInspector('extra', '${item.id}')"
+                      class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center shrink-0 text-xs font-bold"
+                      title="Ver detalle 3D"
+                    >
+                      🧊
+                    </button>
+                    <button
+                      type="button"
+                      ${out ? 'disabled' : `onclick="toggleExtra('${item.id}')"`}
+                      class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border font-bold text-xs ${
+                        selected ? 'bg-lavender border-lavender text-white' : 'bg-white border-slate-300 text-transparent'
+                      }"
+                    >
+                      ✓
+                    </button>
+                  </div>
+                `;
+                })
+                .join('')}
+            </div>
+          </div>
+        `;
+        })
+        .join('');
+    }
+
+    function setFlowerQuantity(val) {
+      let num = parseInt(val, 10);
+      if (isNaN(num) || num < 1) num = 1;
+      if (num > 100) num = 100;
+      state.quantity = num;
+      document.getElementById('flower-qty-display').textContent = num;
+      hideAIOverlay();
+      renderPresetQuantities();
+      updateAllPreviews();
+    }
+
+    function adjustFlowerQuantity(delta) {
+      setFlowerQuantity(state.quantity + delta);
+    }
+
+    function toggleFlowerColor(id) {
+      const idx = state.selectedColorIds.indexOf(id);
+      if (idx > -1) {
+        if (state.selectedColorIds.length === 1) {
+          showToast('Mantén al menos 1 color seleccionado.', 'info');
+          return;
+        }
+        state.selectedColorIds.splice(idx, 1);
+      } else {
+        if (state.selectedColorIds.length >= 3) {
+          showToast('Máximo 3 colores por ramo.', 'info');
+          return;
+        }
+        state.selectedColorIds.push(id);
+      }
+      hideAIOverlay();
+      renderColorSwatches();
+      updateAllPreviews();
+    }
+
+    function selectPaperStyle(id) {
+      state.paperStyleId = id;
+      hideAIOverlay();
+      renderPaperAndBow();
+      updateAllPreviews();
+    }
+
+    function selectPaperColor(id) {
+      state.paperColorId = id;
+      hideAIOverlay();
+      renderPaperAndBow();
+      updateAllPreviews();
+    }
+
+    function selectBowStyle(id) {
+      state.bowStyleId = id;
+      hideAIOverlay();
+      renderPaperAndBow();
+      updateAllPreviews();
+    }
+
+    function toggleExtra(id) {
+      const idx = state.selectedExtraIds.indexOf(id);
+      if (idx > -1) state.selectedExtraIds.splice(idx, 1);
+      else state.selectedExtraIds.push(id);
+      hideAIOverlay();
+      renderExtras();
+      updateAllPreviews();
+    }
+
+    function updateCustomerData() {
+      state.customSashText = document.getElementById('custom-sash-text').value.trim();
+      state.cardFrom = document.getElementById('card-from').value.trim();
+      state.cardTo = document.getElementById('card-to').value.trim();
+      state.cardMessage = document.getElementById('card-message').value.trim();
+      state.customerName = document.getElementById('customer-name').value.trim();
+      state.customerPhone = document.getElementById('customer-phone').value.trim();
+      state.deliveryDate = document.getElementById('delivery-date').value;
+      state.deliveryAddress = document.getElementById('delivery-address').value.trim();
+      renderPhotorealisticBouquetCanvas();
+    }
+
+    function setDeliveryMode(mode) {
+      state.deliveryMode = mode;
+      const pBtn = document.getElementById('mode-pickup-btn');
+      const dBtn = document.getElementById('mode-delivery-btn');
+      const addr = document.getElementById('delivery-address-wrapper');
+      if (mode === 'Recoger en Tocancipá') {
+        pBtn.className = 'min-h-[44px] py-2 px-3 rounded-xl border-2 border-lavender bg-lavender-light/60 text-lavender-dark font-bold text-xs transition';
+        dBtn.className = 'min-h-[44px] py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-semibold text-xs transition';
+        addr.classList.add('hidden');
+      } else {
+        dBtn.className = 'min-h-[44px] py-2 px-3 rounded-xl border-2 border-lavender bg-lavender-light/60 text-lavender-dark font-bold text-xs transition';
+        pBtn.className = 'min-h-[44px] py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-semibold text-xs transition';
+        addr.classList.remove('hidden');
+      }
+    }
+
+    function resetBuilder() {
+      state.flowerTypeId = 'rosa-eterna-perla';
+      state.quantity = 7;
+      state.selectedColorIds = ['lila-pastel', 'morado-uva'];
+      state.paperStyleId = 'coreano-marmol-dorado';
+      state.paperColorId = 'blanco-marmol';
+      state.bowStyleId = 'mono-organza-tornasol';
+      state.selectedExtraIds = [];
+      state.customSashText = '';
+      studioTiltX = 0;
+      document.getElementById('flower-qty-display').textContent = 7;
+      document.getElementById('custom-sash-text').value = '';
+      hideAIOverlay();
+      renderAllBuilderControls();
+      updateAllPreviews();
+      showToast('Diseño reiniciado.', 'info');
+    }
+
+    // =========================================================================
+    // 9. QUOTE CALCULATION & 3D VOLUMETRIC BOUQUET STUDIO RENDERER
+    // =========================================================================
+    function getAllSelectedExtrasObjects(extraIds = state.selectedExtraIds) {
+      const allItems = CATALOG.extrasCategories.flatMap((c) => c.items);
+      return extraIds.map((id) => allItems.find((item) => item.id === id)).filter(Boolean);
+    }
+
+    function calculateCurrentTotal() {
+      const ft = CATALOG.flowerTypes.find((f) => f.id === state.flowerTypeId) || CATALOG.flowerTypes[0];
+      const ps = CATALOG.paperStyles.find((p) => p.id === state.paperStyleId) || CATALOG.paperStyles[0];
+      const bw = CATALOG.bowStyles.find((b) => b.id === state.bowStyleId) || CATALOG.bowStyles[0];
+      const extras = getAllSelectedExtrasObjects();
+      return ft.unitPrice * state.quantity + ps.price + bw.price + extras.reduce((s, e) => s + e.price, 0);
+    }
+
+    function updateAllPreviews() {
+      const total = calculateCurrentTotal();
+      document.getElementById('armar-live-total').textContent = formatCOP(total);
+      document.getElementById('nav-order-badge').textContent = state.quantity;
+
+      const ft = CATALOG.flowerTypes.find((f) => f.id === state.flowerTypeId) || CATALOG.flowerTypes[0];
+      const colors = state.selectedColorIds.map((id) => CATALOG.flowerColors.find((c) => c.id === id)?.name).filter(Boolean);
+      document.getElementById('preview-overlay-caption').textContent = `${state.quantity}x ${ft.name.split(' ')[0]} • ${colors.join(' + ')}`;
+
+      renderQuoteSummary();
+      renderPhotorealisticBouquetCanvas();
+    }
+
+    function renderQuoteSummary() {
+      const ft = CATALOG.flowerTypes.find((f) => f.id === state.flowerTypeId) || CATALOG.flowerTypes[0];
+      const ps = CATALOG.paperStyles.find((p) => p.id === state.paperStyleId) || CATALOG.paperStyles[0];
+      const pc = CATALOG.paperColors.find((c) => c.id === state.paperColorId) || CATALOG.paperColors[0];
+      const bw = CATALOG.bowStyles.find((b) => b.id === state.bowStyleId) || CATALOG.bowStyles[0];
+      const extras = getAllSelectedExtrasObjects();
+      const colors = state.selectedColorIds.map((id) => CATALOG.flowerColors.find((c) => c.id === id)?.name).filter(Boolean);
+
+      const lines = [
+        { label: `${state.quantity}x ${ft.name}`, sub: `Colores: ${colors.join(', ')}`, amount: ft.unitPrice * state.quantity },
+        { label: ps.name, sub: `Tono: ${pc.name}`, amount: ps.price },
+      ];
+      if (bw.price > 0) lines.push({ label: bw.name, sub: 'Moño / cinta', amount: bw.price });
+      extras.forEach((ex) => lines.push({ label: ex.name, sub: 'Detalle extra', amount: ex.price }));
+
+      document.getElementById('quote-items-list').innerHTML = lines
+        .map(
+          (l) => `
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <p class="font-bold text-slate-800">${l.label}</p>
+            <p class="text-[11px] text-slate-400">${l.sub}</p>
+          </div>
+          <span class="font-extrabold text-slate-800 shrink-0">${formatCOP(l.amount)}</span>
+        </div>
+      `
+        )
+        .join('');
+
+      document.getElementById('quote-total-cop').textContent = formatCOP(calculateCurrentTotal());
+    }
+
+    function shadeHex(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+      const G = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amt));
+      const B = Math.min(255, Math.max(0, (num & 0x0000ff) + amt));
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    function bindBouquetStudio3DTilt() {
+      const canvas = document.getElementById('bouquet-photorealistic-canvas');
+      if (!canvas) return;
+      let dragging = false;
+      let startX = 0;
+      const onStart = (x) => { dragging = true; startX = x; };
+      const onMove = (x) => {
+        if (!dragging) return;
+        const delta = (x - startX) * 0.0045;
+        studioTiltX = Math.max(-0.35, Math.min(0.35, studioTiltX + delta));
+        startX = x;
+        renderPhotorealisticBouquetCanvas();
+      };
+      const onEnd = () => { dragging = false; };
+
+      canvas.addEventListener('mousedown', (e) => onStart(e.clientX));
+      window.addEventListener('mousemove', (e) => onMove(e.clientX));
+      window.addEventListener('mouseup', onEnd);
+      canvas.addEventListener('touchstart', (e) => onStart(e.touches[0].clientX), { passive: true });
+      canvas.addEventListener('touchmove', (e) => onMove(e.touches[0].clientX), { passive: true });
+      canvas.addEventListener('touchend', onEnd);
+    }
+
+    function renderPhotorealisticBouquetCanvas() {
+      const canvas = document.getElementById('bouquet-photorealistic-canvas');
+      if (!canvas) return;
+      renderBouquetToTargetCanvas(canvas, state, studioTiltX);
+    }
+
+    function renderBouquetToTargetCanvas(canvas, cfg, tiltAngle = 0) {
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.save();
+      ctx.scale(W / 720, H / 720);
+
+      const flowerType = CATALOG.flowerTypes.find((f) => f.id === cfg.flowerTypeId) || CATALOG.flowerTypes[0];
+      const paperStyle = CATALOG.paperStyles.find((p) => p.id === cfg.paperStyleId) || CATALOG.paperStyles[0];
+      const paperColor = CATALOG.paperColors.find((pc) => pc.id === cfg.paperColorId) || CATALOG.paperColors[0];
+      const bowStyle = CATALOG.bowStyles.find((b) => b.id === cfg.bowStyleId) || CATALOG.bowStyles[0];
+      const extras = getAllSelectedExtrasObjects(cfg.selectedExtraIds || []);
+      const colors = (cfg.selectedColorIds || ['lila-pastel']).map((id) => CATALOG.flowerColors.find((c) => c.id === id)).filter(Boolean);
+
+      // 1. Volumetric 3D Studio & Natural Garden Bokeh Background
+      const isDark = paperStyle.id === 'coreano-negro-lujo' || paperColor.id === 'negro-lujo';
+      const bgGrad = ctx.createRadialGradient(360 + tiltAngle * 80, 270, 50, 360, 360, 540);
+      if (isDark) {
+        bgGrad.addColorStop(0, '#4c2868');
+        bgGrad.addColorStop(0.55, '#1f122b');
+        bgGrad.addColorStop(1, '#09060d');
+      } else {
+        bgGrad.addColorStop(0, '#4f7742');
+        bgGrad.addColorStop(0.55, '#274220');
+        bgGrad.addColorStop(1, '#101d0d');
+      }
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 720, 720);
+
+      [
+        { x: 95 - tiltAngle * 50, y: 110, r: 78, c: 'rgba(255,255,255,0.12)' },
+        { x: 625 - tiltAngle * 50, y: 130, r: 90, c: 'rgba(254,240,138,0.16)' },
+        { x: 115 - tiltAngle * 40, y: 530, r: 85, c: 'rgba(192,132,252,0.16)' },
+        { x: 615 - tiltAngle * 40, y: 540, r: 75, c: 'rgba(134,239,172,0.12)' },
+      ].forEach((b) => {
+        const g = ctx.createRadialGradient(b.x, b.y, 4, b.x, b.y, b.r);
+        g.addColorStop(0, b.c);
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      const isHeartBox = paperStyle.id === 'caja-corazon-grado';
+      const hasGoldEdge = paperStyle.id === 'coreano-marmol-dorado' || paperStyle.id === 'coreano-pastel-filo';
+      const hasMarble = paperStyle.id === 'coreano-marmol-dorado';
+
+      // Apply subtle 3D parallax perspective transform
+      ctx.save();
+      ctx.translate(360, 360);
+      ctx.rotate(tiltAngle * 0.25);
+      ctx.scale(1 - Math.abs(tiltAngle) * 0.14, 1);
+      ctx.translate(-360, -360);
+
+      // 2. Back Korean Paper / Heart Box
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.58)';
+      ctx.shadowBlur = 32;
+      ctx.shadowOffsetY = 16;
+      if (isHeartBox) {
+        drawHeartGiftBox(ctx, 360, 345, paperColor.hex === '#fcfaf5' ? '#dc2626' : paperColor.hex);
+      } else {
+        drawKoreanWrappingBack(ctx, paperColor.hex, hasGoldEdge, hasMarble);
+      }
+      ctx.restore();
+
+      // 3. Inner Tulle Cloud
+      ctx.save();
+      ctx.globalAlpha = 0.34;
+      for (let i = 0; i < 12; i++) {
+        const ang = (Math.PI * 2 * i) / 12;
+        const rx = 360 + Math.cos(ang) * 140;
+        const ry = 300 + Math.sin(ang) * 100;
+        const tg = ctx.createRadialGradient(rx, ry, 5, rx, ry, 52);
+        tg.addColorStop(0, '#ffffff');
+        tg.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = tg;
+        ctx.beginPath();
+        ctx.arc(rx, ry, 52, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // 4. Green Foliage Leaves
+      [-2.5, -2.0, -1.6, -1.1, -0.6, 0.2, 2.9].forEach((ang, i) => {
+        drawRealisticLeaf(ctx, 360 + Math.cos(ang) * 165, 300 + Math.sin(ang) * 120, ang + Math.PI / 2, i % 2 === 0 ? 1.05 : 0.9);
+      });
+
+      // 5. Toppers & Crown
+      if (extras.some((e) => e.group === 'crown')) drawRealisticTiara(ctx, 360, 142);
+      if (extras.some((e) => e.group === 'grad')) drawGraduationCapTopper(ctx, 255, 165);
+      const topperObj = extras.find((e) => e.group === 'topper');
+      if (topperObj) drawGoldAcrylicTopper(ctx, 455, 168, cfg.customSashText || topperObj.text);
+
+      // 6. Volumetric 3D Flowers Dome with Depth Perspective & Ambient Occlusion
+      const positions = computeBouquetFlowerPositions(Math.min(cfg.quantity || 7, 24), isHeartBox);
+      positions.forEach((pos, idx) => {
+        const col = colors[idx % colors.length] || CATALOG.flowerColors[0];
+        const parallaxX = pos.x + tiltAngle * (pos.y - 280) * 0.28;
+        const distFromCenter = Math.hypot(pos.x - 360, pos.y - 295);
+        const depthScale = pos.scale * (1.14 - Math.min(0.24, distFromCenter / 750));
+
+        // Ambient occlusion drop shadow beneath flower head
+        ctx.save();
+        ctx.fillStyle = 'rgba(15, 10, 25, 0.36)';
+        ctx.beginPath();
+        ctx.arc(parallaxX + 4, pos.y + 10, 44 * depthScale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        if (flowerType.shape === 'tulip') drawPhotorealisticTulip(ctx, parallaxX, pos.y, depthScale, col);
+        else if (flowerType.shape === 'lily') drawPhotorealisticChenilleLily(ctx, parallaxX, pos.y, depthScale, col);
+        else if (flowerType.shape === 'sunflower') drawPhotorealisticSatinSunflower(ctx, parallaxX, pos.y, depthScale, col);
+        else drawPhotorealisticSatinRose(ctx, parallaxX, pos.y, depthScale, col, true, flowerType.shape === 'rose-glitter');
+      });
+
+      // 7. Front Wrapping Folds & Bow
+      if (!isHeartBox) {
+        drawKoreanWrappingFront(ctx, paperColor.hex, hasGoldEdge, hasMarble);
+        drawPhotorealisticBow(ctx, 360, 495, colors[0]?.hex || '#a78bfa', bowStyle.id);
+      }
+
+      // 8. Plush, Chocolates, Butterflies, LEDs
+      const plushObj = extras.find((e) => e.group === 'plush');
+      if (plushObj) drawCutePlushAccent(ctx, isHeartBox ? 355 : 275, isHeartBox ? 250 : 375, plushObj.id);
+      if (extras.some((e) => e.group === 'choco')) drawFerreroChocolates(ctx, 360, 415);
+
+      if (bowStyle.id === 'cinta-impresa-frase' || cfg.customSashText) {
+        drawPrintedRibbonBanner(ctx, 360, 345, cfg.customSashText || 'Lo lograste mi princesa', colors[1]?.hex || '#581c87');
+      }
+
+      const bObj = extras.find((e) => e.group === 'butterfly');
+      if (bObj) {
+        drawFiligreeButterfly3D(ctx, 485 + tiltAngle * 24, 295, 0.35, 1.05, bObj.color || '#eab308');
+        drawFiligreeButterfly3D(ctx, 225 + tiltAngle * 24, 255, -0.38, 0.78, bObj.color || '#eab308');
+      }
+      if (extras.some((e) => e.group === 'led')) drawFairyLEDLights(ctx);
+
+      ctx.restore();
+      ctx.restore();
+    }
+
+    function computeBouquetFlowerPositions(count, isHeartBox) {
+      const cx = 360;
+      const cy = isHeartBox ? 345 : 295;
+      const pts = [];
+      if (count === 1) {
+        pts.push({ x: cx, y: cy, scale: 1.48 });
+      } else if (count === 3) {
+        pts.push({ x: cx, y: cy - 38, scale: 1.25 }, { x: cx - 68, y: cy + 24, scale: 1.25 }, { x: cx + 68, y: cy + 24, scale: 1.25 });
+      } else if (count <= 7) {
+        pts.push({ x: cx, y: cy, scale: 1.16 });
+        for (let i = 0; i < count - 1; i++) {
+          const ang = (Math.PI * 2 * i) / (count - 1) - Math.PI / 2;
+          pts.push({ x: cx + Math.cos(ang) * 98, y: cy + Math.sin(ang) * 82, scale: 1.05 });
+        }
+      } else {
+        pts.push({ x: cx, y: cy - 6, scale: 1.04 });
+        const inner = Math.min(6, count - 1);
+        for (let i = 0; i < inner; i++) {
+          const ang = (Math.PI * 2 * i) / inner;
+          pts.push({ x: cx + Math.cos(ang) * 76, y: cy + Math.sin(ang) * 62, scale: 0.96 });
+        }
+        const outer = count - 1 - inner;
+        for (let i = 0; i < outer; i++) {
+          const ang = (Math.PI * 2 * i) / outer + 0.25;
+          pts.push({ x: cx + Math.cos(ang) * 142, y: cy + Math.sin(ang) * 108, scale: 0.88 });
+        }
+      }
+      return pts.sort((a, b) => a.y - b.y);
+    }
+
+    function drawKoreanWrappingBack(ctx, baseHex, hasGoldEdge, hasMarble) {
+      const dark = shadeHex(baseHex, -14);
+      const light = shadeHex(baseHex, 6);
+      const sheets = [
+        [[360, 560], [210, 120], [360, 95], [510, 120]],
+        [[360, 560], [105, 195], [225, 125], [310, 320]],
+        [[360, 560], [615, 195], [495, 125], [410, 320]],
+        [[360, 570], [75, 315], [165, 225], [290, 390]],
+        [[360, 570], [645, 315], [555, 225], [430, 390]],
+      ];
+      sheets.forEach((poly, idx) => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(poly[0][0], poly[0][1]);
+        for (let i = 1; i < poly.length; i++) ctx.lineTo(poly[i][0], poly[i][1]);
+        ctx.closePath();
+        const g = ctx.createLinearGradient(poly[1][0], poly[1][1], poly[0][0], poly[0][1]);
+        g.addColorStop(0, idx % 2 === 0 ? light : baseHex);
+        g.addColorStop(1, dark);
+        ctx.fillStyle = g;
+        ctx.fill();
+        if (hasMarble) {
+          ctx.clip();
+          ctx.strokeStyle = 'rgba(212,175,55,0.45)';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(poly[1][0] + 15, poly[1][1]);
+          ctx.bezierCurveTo(poly[1][0] + 55, poly[1][1] + 65, poly[2][0] - 30, poly[2][1] + 90, poly[0][0], poly[0][1]);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = hasGoldEdge ? '#d4af37' : shadeHex(baseHex, -22);
+        ctx.lineWidth = hasGoldEdge ? 4 : 1.5;
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    function drawKoreanWrappingFront(ctx, baseHex, hasGoldEdge, hasMarble) {
+      const dark = shadeHex(baseHex, -18);
+      const folds = [
+        [[135, 365], [360, 470], [320, 675], [205, 610]],
+        [[585, 365], [360, 470], [400, 675], [515, 610]],
+        [[270, 455], [360, 485], [450, 455], [425, 695], [295, 695]],
+      ];
+      folds.forEach((poly) => {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.22)';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.moveTo(poly[0][0], poly[0][1]);
+        for (let j = 1; j < poly.length; j++) ctx.lineTo(poly[j][0], poly[j][1]);
+        ctx.closePath();
+        const g = ctx.createLinearGradient(poly[0][0], poly[0][1], poly[2][0], poly[2][1]);
+        g.addColorStop(0, baseHex);
+        g.addColorStop(1, dark);
+        ctx.fillStyle = g;
+        ctx.fill();
+        if (hasMarble) {
+          ctx.clip();
+          ctx.strokeStyle = 'rgba(212,175,55,0.4)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(poly[0][0] + 20, poly[0][1] + 10);
+          ctx.quadraticCurveTo(poly[1][0], poly[1][1] + 50, poly[2][0], poly[2][1]);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = hasGoldEdge ? '#d4af37' : shadeHex(baseHex, -25);
+        ctx.lineWidth = hasGoldEdge ? 3.5 : 1.5;
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    function drawHeartGiftBox(ctx, cx, cy, boxHex) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.fillStyle = shadeHex(boxHex, -18);
+      ctx.strokeStyle = '#d4af37';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(0, 175);
+      ctx.bezierCurveTo(-210, 55, -225, -145, -95, -165);
+      ctx.bezierCurveTo(-30, -175, 0, -115, 0, -115);
+      ctx.bezierCurveTo(0, -115, 30, -175, 95, -165);
+      ctx.bezierCurveTo(225, -145, 210, 55, 0, 175);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPhotorealisticSatinRose(ctx, cx, cy, scale, colorObj, hasPearl = true, hasGlitter = false) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(scale, scale);
+      const base = colorObj.hex;
+      const highlight = shadeHex(base, 36);
+      const shadow = shadeHex(base, -34);
+      ctx.shadowColor = 'rgba(0,0,0,0.35)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 4;
+
+      const rings = [
+        { count: 7, radius: 42, petalR: 23, rotOffset: 0 },
+        { count: 6, radius: 27, petalR: 18, rotOffset: 0.45 },
+        { count: 5, radius: 14, petalR: 13, rotOffset: 0.9 },
+      ];
+      rings.forEach((ring) => {
+        for (let i = 0; i < ring.count; i++) {
+          const ang = (Math.PI * 2 * i) / ring.count + ring.rotOffset;
+          ctx.save();
+          ctx.translate(Math.cos(ang) * ring.radius * 0.55, Math.sin(ang) * ring.radius * 0.55);
+          ctx.rotate(ang);
+          const pGrad = ctx.createRadialGradient(4, -4, 2, 0, 0, ring.petalR * 1.3);
+          pGrad.addColorStop(0, highlight);
+          pGrad.addColorStop(0.55, base);
+          pGrad.addColorStop(1, shadow);
+          ctx.fillStyle = pGrad;
+          ctx.beginPath();
+          ctx.moveTo(-ring.petalR * 0.6, -ring.petalR * 0.85);
+          ctx.quadraticCurveTo(ring.petalR * 1.15, -ring.petalR * 0.7, ring.petalR * 1.25, 0);
+          ctx.quadraticCurveTo(ring.petalR * 1.15, ring.petalR * 0.7, -ring.petalR * 0.6, ring.petalR * 0.85);
+          ctx.closePath();
+          ctx.fill();
+          ctx.strokeStyle = highlight;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+          ctx.restore();
+        }
+      });
+
+      ctx.shadowColor = 'transparent';
+      if (hasPearl) {
+        const pearlGrad = ctx.createRadialGradient(-2.5, -2.5, 0.8, 0, 0, 6.5);
+        pearlGrad.addColorStop(0, '#ffffff');
+        pearlGrad.addColorStop(0.65, '#f1f5f9');
+        pearlGrad.addColorStop(1, '#94a3b8');
+        ctx.fillStyle = pearlGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, 6.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (hasGlitter) {
+        ctx.fillStyle = '#ffffff';
+        [[-18, -12], [16, -15], [14, 18], [-15, 16], [0, -24]].forEach(([sx, sy]) => {
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+      ctx.restore();
+    }
+
+    function drawPhotorealisticTulip(ctx, cx, cy, scale, colorObj) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(scale, scale);
+      const base = colorObj.hex;
+      const light = shadeHex(base, 36);
+      const dark = shadeHex(base, -28);
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 8;
+
+      [-1, 1].forEach((dir) => {
+        ctx.save();
+        ctx.rotate(dir * 0.22);
+        const g = ctx.createLinearGradient(-15 * dir, -30, 15 * dir, 30);
+        g.addColorStop(0, light);
+        g.addColorStop(0.5, base);
+        g.addColorStop(1, dark);
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.ellipse(dir * 12, 0, 18, 34, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      const cGrad = ctx.createLinearGradient(0, -36, 0, 34);
+      cGrad.addColorStop(0, '#ffffff');
+      cGrad.addColorStop(0.25, light);
+      cGrad.addColorStop(0.8, base);
+      cGrad.addColorStop(1, dark);
+      ctx.fillStyle = cGrad;
+      ctx.beginPath();
+      ctx.moveTo(0, -38);
+      ctx.bezierCurveTo(24, -18, 22, 24, 0, 34);
+      ctx.bezierCurveTo(-22, 24, -24, -18, 0, -38);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawPhotorealisticChenilleLily(ctx, cx, cy, scale, colorObj) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(scale, scale);
+      const base = colorObj.hex;
+      const fuzzy = shadeHex(base, 45);
+      const deep = shadeHex(base, -25);
+
+      for (let i = 0; i < 6; i++) {
+        ctx.save();
+        ctx.rotate((Math.PI * 2 * i) / 6);
+        const g = ctx.createLinearGradient(0, 0, 0, -48);
+        g.addColorStop(0, deep);
+        g.addColorStop(0.6, base);
+        g.addColorStop(1, fuzzy);
+        ctx.fillStyle = g;
+        ctx.strokeStyle = fuzzy;
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(-15, -24, 0, -48);
+        ctx.quadraticCurveTo(15, -24, 0, 0);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+      // Center pistils
+      ctx.fillStyle = '#fef08a';
+      [[-5, -6], [5, -6], [0, 6]].forEach(([px, py]) => {
+        ctx.beginPath();
+        ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    function drawPhotorealisticSatinSunflower(ctx, cx, cy, scale, colorObj) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(scale, scale);
+      const base = colorObj.hex;
+      for (let i = 0; i < 16; i++) {
+        ctx.save();
+        ctx.rotate((Math.PI * 2 * i) / 16);
+        ctx.fillStyle = base;
+        ctx.beginPath();
+        ctx.moveTo(-7, -14);
+        ctx.lineTo(0, -46);
+        ctx.lineTo(7, -14);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.fillStyle = '#451a03';
+      ctx.beginPath();
+      ctx.arc(0, 0, 17, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawRealisticLeaf(ctx, x, y, angle, scale) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.scale(scale, scale);
+      const g = ctx.createLinearGradient(0, -28, 0, 28);
+      g.addColorStop(0, '#4ade80');
+      g.addColorStop(0.5, '#16a34a');
+      g.addColorStop(1, '#14532d');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(0, -32);
+      ctx.quadraticCurveTo(18, 0, 0, 32);
+      ctx.quadraticCurveTo(-18, 0, 0, -32);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawPhotorealisticBow(ctx, cx, cy, colorHex, bowStyleId) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.shadowColor = 'rgba(0,0,0,0.35)';
+      ctx.shadowBlur = 12;
+      const isOrganza = bowStyleId === 'mono-organza-tornasol';
+      const isGoldTrim = bowStyleId === 'mono-satin-negro-oro';
+      ctx.globalAlpha = isOrganza ? 0.85 : 1;
+      const fill = isGoldTrim ? '#18181b' : colorHex;
+      const light = isOrganza ? '#e0f2fe' : shadeHex(fill, 32);
+      const border = isGoldTrim ? '#d4af37' : light;
+
+      [-1, 1].forEach((dir) => {
+        ctx.fillStyle = fill;
+        ctx.strokeStyle = border;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(dir * 8, 8);
+        ctx.quadraticCurveTo(dir * 55, 70, dir * 78, 148);
+        ctx.lineTo(dir * 42, 132);
+        ctx.quadraticCurveTo(dir * 26, 70, dir * 2, 14);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(dir * 75, -52, dir * 105, 38, 0, 12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function drawFiligreeButterfly3D(ctx, x, y, rot, scale, colorHex) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.scale(scale, scale);
+      ctx.shadowColor = 'rgba(0,0,0,0.4)';
+      ctx.shadowBlur = 10;
+      const g = ctx.createLinearGradient(-45, -45, 45, 45);
+      g.addColorStop(0, '#fef08a');
+      g.addColorStop(0.5, colorHex);
+      g.addColorStop(1, '#a16207');
+      ctx.fillStyle = g;
+      ctx.strokeStyle = '#fffbeb';
+      ctx.lineWidth = 1.5;
+      [-1, 1].forEach((dir) => {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(dir * 38, -46, dir * 64, -12, dir * 28, 12);
+        ctx.bezierCurveTo(dir * 52, 26, dir * 24, 52, 0, 22);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function drawRealisticTiara(ctx, x, y) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.strokeStyle = '#f8fafc';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-64, 24);
+      ctx.lineTo(-42, -8);
+      ctx.lineTo(-22, 12);
+      ctx.lineTo(0, -34);
+      ctx.lineTo(22, 12);
+      ctx.lineTo(42, -8);
+      ctx.lineTo(64, 24);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawGoldAcrylicTopper(ctx, x, y, text) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(-0.14);
+      ctx.font = 'bold 34px "Great Vibes", cursive';
+      ctx.textAlign = 'center';
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#78350f';
+      ctx.strokeText(text, 0, 8);
+      ctx.fillStyle = '#fde047';
+      ctx.fillText(text, 0, 8);
+      ctx.restore();
+    }
+
+    function drawGraduationCapTopper(ctx, x, y) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(-0.18);
+      ctx.fillStyle = '#18181b';
+      ctx.strokeStyle = '#d4af37';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -35);
+      ctx.lineTo(52, -12);
+      ctx.lineTo(0, 12);
+      ctx.lineTo(-52, -12);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPrintedRibbonBanner(ctx, x, y, text, ribbonHex) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(-0.06);
+      ctx.fillStyle = ribbonHex;
+      ctx.beginPath();
+      ctx.roundRect(-165, -16, 330, 38, 12);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 21px "Great Vibes", cursive';
+      ctx.textAlign = 'center';
+      ctx.fillText(`👑 ${text}`, 0, 10);
+      ctx.restore();
+    }
+
+    function drawCutePlushAccent(ctx, x, y, plushId) {
+      ctx.save();
+      ctx.translate(x, y);
+      const isBunny = plushId.includes('cinnamoroll');
+      ctx.fillStyle = isBunny ? '#ffffff' : '#d6c3b3';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 34, 28, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.arc(-12, -2, 3.5, 0, Math.PI * 2);
+      ctx.arc(12, -2, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawFerreroChocolates(ctx, x, y) {
+      [-34, 0, 34].forEach((dx) => {
+        ctx.save();
+        ctx.translate(x + dx, y);
+        ctx.fillStyle = '#d97706';
+        ctx.beginPath();
+        ctx.arc(0, 0, 14, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    function drawFairyLEDLights(ctx) {
+      [[235, 220], [360, 185], [485, 230], [220, 295], [495, 290], [360, 410]].forEach(([lx, ly]) => {
+        ctx.save();
+        const glow = ctx.createRadialGradient(lx, ly, 1, lx, ly, 16);
+        glow.addColorStop(0, '#ffffff');
+        glow.addColorStop(0.5, 'rgba(254,240,138,0.85)');
+        glow.addColorStop(1, 'rgba(254,240,138,0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(lx, ly, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    function downloadBouquetSnapshot() {
+      const aiImg = document.getElementById('ai-generated-bouquet-img');
+      const link = document.createElement('a');
+      link.download = 'Mi-Ramo-Nube-De-Petalos.png';
+      link.href = !aiImg.classList.contains('hidden') && aiImg.src ? aiImg.src : document.getElementById('bouquet-photorealistic-canvas').toDataURL('image/png');
+      link.click();
+      showToast('¡Imagen de tu ramo guardada!', 'success');
+    }
+
+    // =========================================================================
+    // 10. PURE CANVAS 3D 360° PRODUCT INSPECTOR (ZERO EXTERNAL DEPENDENCIES)
+    // =========================================================================
+    let inspectorAnimId = null;
+    let inspectorYaw = 0.35;
+    let inspectorPitch = 0.25;
+    let inspectorShowingPhoto = false;
+
+    function openProduct3DInspector(kind, itemId) {
+      let item = null;
+      if (kind === 'flower') {
+        item = CATALOG.flowerTypes.find((f) => f.id === itemId);
+      } else {
+        item = CATALOG.extrasCategories.flatMap((c) => c.items).find((e) => e.id === itemId);
+      }
+      if (!item) return;
+
+      document.getElementById('modal-3d-title').textContent = item.name;
+      document.getElementById('modal-3d-dimensions').textContent = item.dimensions || 'Dimensiones artesanales estándar';
+      document.getElementById('modal-3d-material').textContent = 'Material: ' + (item.material || 'Acabado artesanal Nube de Pétalos');
+      document.getElementById('modal-3d-desc').textContent = item.desc || 'Pieza elaborada a mano con relieve 3D.';
+      document.getElementById('modal-3d-price').textContent = formatCOP(kind === 'flower' ? item.unitPrice : item.price);
+
+      const selectBtn = document.getElementById('modal-3d-select-btn');
+      selectBtn.onclick = () => {
+        if (kind === 'flower') selectFlowerType(item.id);
+        else if (!state.selectedExtraIds.includes(item.id)) toggleExtra(item.id);
+        closeProduct3DModal();
+        showToast(`"${item.name}" seleccionado.`, 'success');
+      };
+
+      const photoImg = document.getElementById('modal-3d-real-photo');
+      const togglePhotoBtn = document.getElementById('modal-3d-toggle-photo-btn');
+      inspectorShowingPhoto = false;
+      photoImg.classList.add('hidden');
+
+      if (item.photoUrl) {
+        photoImg.src = item.photoUrl;
+        togglePhotoBtn.classList.remove('hidden');
+        togglePhotoBtn.textContent = 'Ver Foto Real';
+      } else {
+        togglePhotoBtn.classList.add('hidden');
+      }
+
+      document.getElementById('product-3d-modal').classList.remove('hidden');
+      startCanvas3DInspectorLoop(item, kind);
+    }
+
+    function toggleInspectorPhotoMode() {
+      const photoImg = document.getElementById('modal-3d-real-photo');
+      const btn = document.getElementById('modal-3d-toggle-photo-btn');
+      inspectorShowingPhoto = !inspectorShowingPhoto;
+      if (inspectorShowingPhoto) {
+        photoImg.classList.remove('hidden');
+        btn.textContent = 'Volver a Modelo 3D';
+      } else {
+        photoImg.classList.add('hidden');
+        btn.textContent = 'Ver Foto Real';
+      }
+    }
+
+    function closeProduct3DModal() {
+      document.getElementById('product-3d-modal').classList.add('hidden');
+      if (inspectorAnimId) {
+        cancelAnimationFrame(inspectorAnimId);
+        inspectorAnimId = null;
+      }
+    }
+
+    function startCanvas3DInspectorLoop(item, kind) {
+      if (inspectorAnimId) cancelAnimationFrame(inspectorAnimId);
+      const canvas = document.getElementById('inspector-3d-canvas');
+      const ctx = canvas.getContext('2d');
+      let isDragging = false;
+      let prevX = 0;
+
+      const onDown = (x) => { isDragging = true; prevX = x; };
+      const onMove = (x) => {
+        if (!isDragging) return;
+        inspectorYaw += (x - prevX) * 0.02;
+        prevX = x;
+      };
+      const onUp = () => { isDragging = false; };
+
+      canvas.onmousedown = (e) => onDown(e.clientX);
+      window.onmousemove = (e) => onMove(e.clientX);
+      window.onmouseup = onUp;
+      canvas.ontouchstart = (e) => onDown(e.touches[0].clientX);
+      canvas.ontouchmove = (e) => onMove(e.touches[0].clientX);
+      canvas.ontouchend = onUp;
+
+      const selectedColorObj = CATALOG.flowerColors.find((c) => c.id === state.selectedColorIds[0]);
+      const baseHex = selectedColorObj ? selectedColorObj.hex : item.shape === 'lily' ? '#f472b6' : '#9333ea';
+
+      function renderFrame() {
+        inspectorAnimId = requestAnimationFrame(renderFrame);
+        if (!isDragging) inspectorYaw += 0.018;
+
+        const W = canvas.width;
+        const H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        // Studio Spotlight Backdrop
+        const bg = ctx.createRadialGradient(W / 2, H * 0.44, 15, W / 2, H * 0.5, 220);
+        bg.addColorStop(0, '#3b1d5e');
+        bg.addColorStop(0.65, '#190d2b');
+        bg.addColorStop(1, '#090510');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // 3D Rotating Turntable Pedestal
+        const cx = W / 2;
+        const cy = H * 0.45;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(192, 132, 252, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + 78, 95, 24, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Pedestal tick marks rotating with yaw
+        for (let t = 0; t < 12; t++) {
+          const a = inspectorYaw + (Math.PI * 2 * t) / 12;
+          const tx = cx + Math.cos(a) * 95;
+          const ty = cy + 78 + Math.sin(a) * 24;
+          ctx.fillStyle = Math.sin(a) > 0 ? '#fde047' : 'rgba(255,255,255,0.25)';
+          ctx.beginPath();
+          ctx.arc(tx, ty, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+
+        if (kind === 'flower') {
+          // 3D Green Stem & Rotating Leaves
+          ctx.save();
+          const stemGrad = ctx.createLinearGradient(cx - 5, cy, cx + 5, cy + 78);
+          stemGrad.addColorStop(0, '#22c55e');
+          stemGrad.addColorStop(1, '#14532d');
+          ctx.strokeStyle = stemGrad;
+          ctx.lineWidth = 7;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(cx, cy + 12);
+          ctx.lineTo(cx, cy + 76);
+          ctx.stroke();
+
+          // 3D Orbiting Leaves
+          [0, Math.PI].forEach((offset) => {
+            const la = inspectorYaw + offset;
+            const lx = cx + Math.cos(la) * 26;
+            const ly = cy + 44 + Math.sin(la) * 6;
+            drawRealisticLeaf(ctx, lx, ly, Math.cos(la) > 0 ? 0.65 : -0.65, 0.72);
+          });
+          ctx.restore();
+
+          // 3D Perspective-Projected Flower Head (Z-sorted petals)
+          const petals3D = [];
+          const colObj = { hex: baseHex, inner: shadeHex(baseHex, 35), stroke: shadeHex(baseHex, -30) };
+
+          if (item.shape === 'tulip') {
+            for (let i = 0; i < 6; i++) {
+              const a = inspectorYaw + (Math.PI * 2 * i) / 6;
+              petals3D.push({
+                z: Math.sin(a),
+                x: cx + Math.cos(a) * 24,
+                y: cy - 8 + Math.sin(a) * 8,
+                rot: Math.cos(a) * 0.25,
+                scaleX: 0.75 + Math.sin(a) * 0.22,
+                scaleY: 1.15,
+              });
+            }
+            petals3D.sort((a, b) => a.z - b.z);
+            petals3D.forEach((p) => {
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot);
+              ctx.scale(p.scaleX, p.scaleY);
+              const g = ctx.createLinearGradient(0, -34, 0, 28);
+              g.addColorStop(0, shadeHex(baseHex, p.z > 0 ? 40 : 12));
+              g.addColorStop(0.6, baseHex);
+              g.addColorStop(1, shadeHex(baseHex, -32));
+              ctx.fillStyle = g;
+              ctx.beginPath();
+              ctx.ellipse(0, 0, 20, 34, 0, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            });
+          } else if (item.shape === 'lily') {
+            for (let i = 0; i < 6; i++) {
+              const a = inspectorYaw + (Math.PI * 2 * i) / 6;
+              petals3D.push({
+                z: Math.sin(a),
+                x: cx + Math.cos(a) * 38,
+                y: cy - 8 + Math.sin(a) * 16,
+                ang: a,
+              });
+            }
+            petals3D.sort((a, b) => a.z - b.z);
+            petals3D.forEach((p) => {
+              ctx.save();
+              ctx.translate(cx, cy - 8);
+              ctx.rotate(p.ang);
+              const g = ctx.createLinearGradient(0, 0, 56, 0);
+              g.addColorStop(0, shadeHex(baseHex, -25));
+              g.addColorStop(0.6, baseHex);
+              g.addColorStop(1, shadeHex(baseHex, 45));
+              ctx.fillStyle = g;
+              ctx.strokeStyle = '#fff1f2';
+              ctx.lineWidth = 2.5;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.quadraticCurveTo(28, -15, 58, 0);
+              ctx.quadraticCurveTo(28, 15, 0, 0);
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+            });
+          } else {
+            // 3D Multi-Ring Satin Rose rotating in 360°
+            ctx.save();
+            ctx.translate(cx, cy - 10);
+            ctx.rotate(inspectorYaw * 0.4);
+            ctx.scale(1.38, 1.18);
+            drawPhotorealisticSatinRose(ctx, 0, 0, 1, colObj, true, item.shape === 'rose-glitter');
+            ctx.restore();
+          }
+        } else {
+          // 3D Rotating Accessory Showcase
+          ctx.save();
+          ctx.translate(cx, cy - 6);
+          const foreshorten = 0.65 + Math.abs(Math.cos(inspectorYaw)) * 0.55;
+          ctx.scale(foreshorten, 1.15);
+          if (item.group === 'butterfly') drawFiligreeButterfly3D(ctx, 0, 0, Math.sin(inspectorYaw) * 0.2, 1.35, item.color || '#eab308');
+          else if (item.group === 'crown') drawRealisticTiara(ctx, 0, 5);
+          else if (item.group === 'grad') drawGraduationCapTopper(ctx, 0, 5);
+          else if (item.group === 'choco') drawFerreroChocolates(ctx, 0, 0);
+          else if (item.group === 'plush') drawCutePlushAccent(ctx, 0, 0, item.id);
+          else drawGoldAcrylicTopper(ctx, 0, 5, item.text || 'Detalle 3D');
+          ctx.restore();
+        }
+      }
+
+      renderFrame();
+    }
+
+    function hideAIOverlay() {
+      document.getElementById('ai-generated-bouquet-img').classList.add('hidden');
+      document.getElementById('toggle-canvas-view-btn').classList.add('hidden');
+    }
+
+    async function generateAIPhotorealisticPreview() {
+      const loader = document.getElementById('ai-render-loader');
+      const aiImg = document.getElementById('ai-generated-bouquet-img');
+      const toggleBtn = document.getElementById('toggle-canvas-view-btn');
+      loader.classList.remove('hidden');
+
+      const ft = CATALOG.flowerTypes.find((f) => f.id === state.flowerTypeId) || CATALOG.flowerTypes[0];
+      const ps = CATALOG.paperStyles.find((p) => p.id === state.paperStyleId) || CATALOG.paperStyles[0];
+      const pc = CATALOG.paperColors.find((c) => c.id === state.paperColorId) || CATALOG.paperColors[0];
+      const bw = CATALOG.bowStyles.find((b) => b.id === state.bowStyleId) || CATALOG.bowStyles[0];
+      const extras = getAllSelectedExtrasObjects();
+      const colors = state.selectedColorIds.map((id) => CATALOG.flowerColors.find((c) => c.id === id)?.name).filter(Boolean);
+
+      const prompt = `Ultra-realistic 3D commercial product photography of a luxury handmade eternal flower bouquet by "Nube de Pétalos". Exact composition: ${state.quantity} handcrafted ${ft.name} in vibrant ${colors.join(' and ')} colors, arranged in a dimensional 3D dome with realistic shadows and depth. Wrapped in crisp layered Korean floral paper (${ps.name}, ${pc.name} shade) with structured geometric folds and a voluminous ${bw.name}. ${extras.length ? 'Adorned with: ' + extras.map((e) => e.name).join(', ') + '.' : ''} ${state.customSashText ? 'Includes custom gold/ribbon banner reading "' + state.customSashText + '".' : ''} Shot on 85mm f/1.8 lens, natural outdoor garden bokeh background, rich satin fabric weave, pearl highlights, 8k photorealistic depth.`;
+
+      try {
+        const apiKey = '';
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: '1:1' } },
+          }),
+        });
+        if (!response.ok) throw new Error('Fallback to studio');
+        const result = await response.json();
+        const part = result?.candidates?.[0]?.content?.parts?.find((p) => p.inlineData);
+        if (part?.inlineData?.data) {
+          aiImg.src = `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+          aiImg.classList.remove('hidden');
+          toggleBtn.classList.remove('hidden');
+          showToast('¡Foto fotorrealista 3D generada!', 'success');
+        } else {
+          throw new Error('No image');
+        }
+      } catch (e) {
+        renderPhotorealisticBouquetCanvas();
+        showToast('Vista 3D volumétrica actualizada.', 'info');
+      } finally {
+        loader.classList.add('hidden');
+      }
+    }
+
+    // =========================================================================
+    // 11. OFFICIAL INVOICE MODAL + HD PNG RECEIPT & WHATSAPP ORDER
+    // =========================================================================
+    function getInvoiceLineItems() {
+      const ft = CATALOG.flowerTypes.find((f) => f.id === state.flowerTypeId) || CATALOG.flowerTypes[0];
+      const ps = CATALOG.paperStyles.find((p) => p.id === state.paperStyleId) || CATALOG.paperStyles[0];
+      const pc = CATALOG.paperColors.find((c) => c.id === state.paperColorId) || CATALOG.paperColors[0];
+      const bw = CATALOG.bowStyles.find((b) => b.id === state.bowStyleId) || CATALOG.bowStyles[0];
+      const extras = getAllSelectedExtrasObjects();
+      const colors = state.selectedColorIds.map((id) => CATALOG.flowerColors.find((c) => c.id === id)?.name).filter(Boolean);
+
+      const rows = [
+        {
+          desc: `${ft.name} (${colors.join(' / ')})`,
+          qty: state.quantity,
+          unit: ft.unitPrice,
+          sub: ft.unitPrice * state.quantity,
+        },
+        {
+          desc: `${ps.name} — Tono ${pc.name}`,
+          qty: 1,
+          unit: ps.price,
+          sub: ps.price,
+        },
+      ];
+
+      if (bw.price > 0) {
+        rows.push({ desc: bw.name, qty: 1, unit: bw.price, sub: bw.price });
+      }
+      extras.forEach((ex) => {
+        rows.push({ desc: ex.name, qty: 1, unit: ex.price, sub: ex.price });
+      });
+
+      return rows;
+    }
+
+    function openOfficialInvoiceModal() {
+      let seq = parseInt(localStorage.getItem(STORAGE_KEY_INVOICE_SEQ) || '41', 10) + 1;
+      try { localStorage.setItem(STORAGE_KEY_INVOICE_SEQ, String(seq)); } catch (e) {}
+      const invCode = `#NP-${new Date().getFullYear()}-${String(seq).padStart(4, '0')}`;
+
+      document.getElementById('inv-number').textContent = invCode;
+      document.getElementById('inv-date').textContent = new Date().toLocaleDateString('es-CO');
+      document.getElementById('inv-store-wa').textContent = state.storeWhatsapp;
+      document.getElementById('inv-cust-name').textContent = state.customerName || 'Cliente Especial';
+      document.getElementById('inv-cust-phone').textContent = state.customerPhone || 'Por confirmar';
+      document.getElementById('inv-delivery-info').textContent =
+        state.deliveryMode === 'Envío a Domicilio' && state.deliveryAddress
+          ? `Domicilio: ${state.deliveryAddress} (${state.deliveryDate})`
+          : `${state.deliveryMode} (${state.deliveryDate || 'Por confirmar'})`;
+
+      const aiImg = document.getElementById('ai-generated-bouquet-img');
+      const thumbSrc =
+        !aiImg.classList.contains('hidden') && aiImg.src
+          ? aiImg.src
+          : document.getElementById('bouquet-photorealistic-canvas').toDataURL('image/png');
+      document.getElementById('inv-bouquet-thumb').src = thumbSrc;
+
+      const rows = getInvoiceLineItems();
+      document.getElementById('inv-items-tbody').innerHTML = rows
+        .map(
+          (r) => `
+          <tr>
+            <td class="py-2 px-2.5 font-semibold text-slate-800">${r.desc}</td>
+            <td class="py-2 px-1.5 text-center font-bold text-slate-600">${r.qty}</td>
+            <td class="py-2 px-2 text-right text-slate-600">${formatCOP(r.unit).replace(' COP', '')}</td>
+            <td class="py-2 px-2.5 text-right font-extrabold text-slate-900">${formatCOP(r.sub).replace(' COP', '')}</td>
+          </tr>
+        `
+        )
+        .join('');
+
+      const noteBox = document.getElementById('inv-card-note-box');
+      if (state.cardTo || state.cardFrom || state.cardMessage) {
+        noteBox.classList.remove('hidden');
+        document.getElementById('inv-card-note-text').textContent = `De: ${state.cardFrom || '—'} | Para: ${state.cardTo || '—'} — "${state.cardMessage || ''}"`;
+      } else {
+        noteBox.classList.add('hidden');
+      }
+
+      document.getElementById('inv-grand-total').textContent = formatCOP(calculateCurrentTotal());
+      document.getElementById('invoice-modal').classList.remove('hidden');
+    }
+
+    function closeOfficialInvoiceModal() {
+      document.getElementById('invoice-modal').classList.add('hidden');
+    }
+
+    function generateReceiptPNG() {
+      const c = document.getElementById('receipt-export-canvas');
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fffdf9';
+      ctx.fillRect(0, 0, 800, 1140);
+
+      const grad = ctx.createLinearGradient(0, 0, 800, 200);
+      grad.addColorStop(0, '#f3e8ff');
+      grad.addColorStop(0.5, '#fce7f3');
+      grad.addColorStop(1, '#e0f2fe');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 800, 205);
+
+      const logoImg = document.getElementById('header-logo-img');
+      if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(115, 102, 68, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(logoImg, 47, 34, 136, 136);
+        ctx.restore();
+      }
+
+      ctx.fillStyle = '#6b21a8';
+      ctx.font = 'italic bold 48px Georgia, serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Nube de Pétalos', 210, 92);
+
+      ctx.fillStyle = '#475569';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('FLORES ETERNAS & DETALLES • FACTURA OFICIAL', 210, 126);
+      ctx.fillText(`Fecha: ${new Date().toLocaleDateString('es-CO')}  •  Tocancipá`, 210, 154);
+
+      const previewCanvas = document.getElementById('bouquet-photorealistic-canvas');
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(240, 225, 320, 320, 24);
+      ctx.clip();
+      ctx.drawImage(previewCanvas, 240, 225, 320, 320);
+      ctx.restore();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 19px sans-serif';
+      let y = 585;
+      const rows = getInvoiceLineItems();
+      rows.forEach((r) => {
+        ctx.fillStyle = '#1e293b';
+        ctx.fillText(`${r.qty}x ${r.desc}`.slice(0, 44), 55, y);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#6b21a8';
+        ctx.fillText(formatCOP(r.sub), 745, y);
+        ctx.textAlign = 'left';
+        y += 38;
+      });
+
+      y += 14;
+      ctx.fillStyle = '#475569';
+      ctx.font = '17px sans-serif';
+      ctx.fillText(`Cliente: ${state.customerName || 'Cliente Especial'}  |  Entrega: ${state.deliveryMode} (${state.deliveryDate || 'Por confirmar'})`, 55, y);
+
+      y += 35;
+      ctx.fillStyle = '#1e1b4b';
+      ctx.beginPath();
+      ctx.roundRect(50, y, 700, 76, 18);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.fillText('TOTAL A PAGAR:', 78, y + 46);
+
+      ctx.fillStyle = '#fde047';
+      ctx.font = 'bold 32px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(formatCOP(calculateCurrentTotal()), 720, y + 48);
+
+      const link = document.createElement('a');
+      link.download = 'Factura-Nube-De-Petalos.png';
+      link.href = c.toDataURL('image/png');
+      link.click();
+      showToast('¡Factura oficial descargada en imagen HD!', 'success');
+    }
+
+    function buildOrderSummaryText() {
+      const ft = CATALOG.flowerTypes.find((f) => f.id === state.flowerTypeId) || CATALOG.flowerTypes[0];
+      const ps = CATALOG.paperStyles.find((p) => p.id === state.paperStyleId) || CATALOG.paperStyles[0];
+      const pc = CATALOG.paperColors.find((c) => c.id === state.paperColorId) || CATALOG.paperColors[0];
+      const bw = CATALOG.bowStyles.find((b) => b.id === state.bowStyleId) || CATALOG.bowStyles[0];
+      const extras = getAllSelectedExtrasObjects();
+      const colors = state.selectedColorIds.map((id) => CATALOG.flowerColors.find((c) => c.id === id)?.name).filter(Boolean);
+      const total = calculateCurrentTotal();
+
+      let txt = `🌸 *FACTURA / PEDIDO — NUBE DE PÉTALOS* 🌸\n_Flores Eternas & Detalles_\n\n`;
+      if (state.activeBudget) txt += `🎯 *Presupuesto:* ${formatCOP(state.activeBudget)}\n\n`;
+      txt += `💐 *MI RAMO:*\n`;
+      txt += `• *Flores:* ${state.quantity}x ${ft.name} (${formatCOP(ft.unitPrice * state.quantity)})\n`;
+      txt += `• *Colores:* ${colors.join(', ')}\n`;
+      txt += `• *Envoltura:* ${ps.name} - ${pc.name} (${formatCOP(ps.price)})\n`;
+      txt += `• *Moño:* ${bw.name}\n`;
+      if (state.customSashText) txt += `• *Frase cinta/topper:* "${state.customSashText}"\n`;
+      if (extras.length) {
+        txt += `\n✨ *DETALLES EXTRAS:*\n`;
+        extras.forEach((e) => (txt += `• ${e.name} (${formatCOP(e.price)})\n`));
+      }
+      if (state.cardTo || state.cardFrom || state.cardMessage) {
+        txt += `\n💌 *TARJETA:*\n`;
+        if (state.cardFrom) txt += `• *De:* ${state.cardFrom}\n`;
+        if (state.cardTo) txt += `• *Para:* ${state.cardTo}\n`;
+        if (state.cardMessage) txt += `• *Mensaje:* "${state.cardMessage}"\n`;
+      }
+      txt += `\n🚚 *ENTREGA:*\n`;
+      txt += `• *Cliente:* ${state.customerName || 'Por confirmar'}\n`;
+      txt += `• *WhatsApp:* ${state.customerPhone || 'Por confirmar'}\n`;
+      txt += `• *Fecha:* ${state.deliveryDate || 'Por confirmar'}\n`;
+      txt += `• *Modalidad:* ${state.deliveryMode}\n`;
+      if (state.deliveryMode === 'Envío a Domicilio' && state.deliveryAddress) {
+        txt += `• *Dirección:* ${state.deliveryAddress}\n`;
+      }
+      txt += `\n💰 *TOTAL A PAGAR:* *${formatCOP(total)}*`;
+      return txt;
+    }
+
+    function copyOrderSummary() {
+      const helper = document.getElementById('clipboard-helper');
+      helper.value = buildOrderSummaryText();
+      helper.select();
+      helper.setSelectionRange(0, 99999);
+      try {
+        document.execCommand('copy');
+        showToast('¡Detalle copiado al portapapeles!', 'success');
+      } catch (e) {}
+    }
+
+    function sendWhatsAppOrder() {
+      const url = `https://wa.me/${state.storeWhatsapp}?text=${encodeURIComponent(buildOrderSummaryText())}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-caption').textContent = caption;
+      document.getElementById('photo-lightbox').classList.remove('hidden');
+    }
+
+    function closeLightbox() {
+      document.getElementById('photo-lightbox').classList.add('hidden');
+    }
+
+    // =========================================================================
+    // 12. OWNER DASHBOARD (PASSWORD: 1109)
+    // =========================================================================
+    function openOwnerPinModal() {
+      document.getElementById('owner-pin-input').value = '';
+      document.getElementById('owner-pin-error').classList.add('hidden');
+      document.getElementById('owner-pin-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('owner-pin-input').focus(), 100);
+    }
+
+    function closeOwnerPinModal() {
+      document.getElementById('owner-pin-modal').classList.add('hidden');
+    }
+
+    function verifyOwnerPin(e) {
+      e.preventDefault();
+      if (document.getElementById('owner-pin-input').value.trim() === OWNER_PIN) {
+        closeOwnerPinModal();
+        renderOwnerInventoryTables();
+        renderOwnerGalleryGrid();
+        document.getElementById('owner-whatsapp-field').value = state.storeWhatsapp;
+        document.getElementById('owner-dashboard-modal').classList.remove('hidden');
+      } else {
+        document.getElementById('owner-pin-error').classList.remove('hidden');
+        document.getElementById('owner-pin-input').value = '';
+      }
+    }
+
+    function closeOwnerDashboard() {
+      document.getElementById('owner-dashboard-modal').classList.add('hidden');
+      ensureValidSelections();
+      renderHomeRealGallery();
+      renderAllBuilderControls();
+      generateBudgetProposals();
+      updateAllPreviews();
+    }
+
+    function switchOwnerTab(tab) {
+      ['inventory', 'gallery', 'brand', 'backup'].forEach((t) => {
+        const panel = document.getElementById(`owner-panel-${t}`);
+        const btn = document.querySelector(`[data-owner-tab="${t}"]`);
+        if (t === tab) {
+          panel.classList.remove('hidden');
+          btn.className = 'owner-tab-btn px-3.5 py-2 rounded-t-xl text-xs font-bold border-b-2 border-lavender text-lavender-dark bg-lavender-light/35 shrink-0';
+        } else {
+          panel.classList.add('hidden');
+          btn.className = 'owner-tab-btn px-3.5 py-2 rounded-t-xl text-xs font-semibold border-b-2 border-transparent text-slate-500 shrink-0';
+        }
+      });
+    }
+
+    function renderOwnerInventoryTables() {
+      const container = document.getElementById('owner-inventory-tables');
+      const sections = [
+        { key: 'flowerTypes', title: '1. Tipos de Flores (Precio unitario)', priceField: 'unitPrice', allowPhoto: true },
+        { key: 'flowerColors', title: '2. Colores de Cinta (Stock)', priceField: null, allowPhoto: false },
+        { key: 'paperStyles', title: '3. Papel Coreano y Cajas', priceField: 'price', allowPhoto: true },
+        { key: 'bowStyles', title: '4. Moños y Cintas', priceField: 'price', allowPhoto: true },
+      ];
+      let html = sections.map((s) => renderInventorySection(s.title, s.key, CATALOG[s.key], s.priceField, s.allowPhoto)).join('');
+      CATALOG.extrasCategories.forEach((cat, idx) => {
+        html += renderInventorySection(`5.${idx + 1} ${cat.category}`, `extras_${idx}`, cat.items, 'price', true);
+      });
+      container.innerHTML = html;
+    }
+
+    function renderInventorySection(title, sectionKey, items, priceField, allowPhoto) {
+      return `
+        <div class="bg-white rounded-2xl border border-lavender/20 overflow-hidden shadow-2xs">
+          <div class="bg-creamSoft px-3.5 py-2.5 border-b border-lavender/15">
+            <h4 class="font-serif font-bold text-xs sm:text-sm text-slate-800">${title}</h4>
+          </div>
+          <div class="divide-y divide-slate-100">
+            ${items
+              .map(
+                (item, idx) => `
+              <div class="p-3 flex flex-wrap items-center gap-2.5">
+                ${
+                  allowPhoto
+                    ? `<label class="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center cursor-pointer shrink-0 border border-slate-200 text-xs">
+                         ${item.photoUrl ? `<img src="${item.photoUrl}" class="w-full h-full object-cover" />` : `📷`}
+                         <input type="file" accept="image/*" class="hidden" onchange="uploadItemPhoto('${sectionKey}', ${idx}, event)" />
+                       </label>`
+                    : `<span class="w-6 h-6 rounded-full shrink-0 border" style="background:${item.hex || '#ddd'}"></span>`
+                }
+                <input
+                  type="text"
+                  value="${item.name.replace(/"/g, '&quot;')}"
+                  onchange="updateInventoryField('${sectionKey}', ${idx}, 'name', this.value)"
+                  class="flex-1 min-w-[140px] px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-slate-800"
+                />
+                ${
+                  priceField
+                    ? `<input type="number" step="500" value="${item[priceField]}" onchange="updateInventoryField('${sectionKey}', ${idx}, '${priceField}', Number(this.value))" class="w-24 px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-extrabold text-lavender-dark" />`
+                    : ''
+                }
+                <input
+                  type="number"
+                  value="${item.stock ?? 20}"
+                  onchange="updateInventoryField('${sectionKey}', ${idx}, 'stock', Number(this.value))"
+                  class="w-16 px-2 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-center"
+                  title="Stock"
+                />
+                <input
+                  type="checkbox"
+                  ${item.active ? 'checked' : ''}
+                  onchange="updateInventoryField('${sectionKey}', ${idx}, 'active', this.checked)"
+                  class="w-4 h-4 accent-lavender"
+                />
+              </div>
+            `
+              )
+              .join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function getTargetArrayBySectionKey(key) {
+      if (key.startsWith('extras_')) return CATALOG.extrasCategories[parseInt(key.split('_')[1], 10)].items;
+      return CATALOG[key];
+    }
+
+    function updateInventoryField(key, idx, field, val) {
+      const arr = getTargetArrayBySectionKey(key);
+      if (arr && arr[idx]) arr[idx][field] = val;
+    }
+
+    function uploadItemPhoto(key, idx, event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      compressImageToDataURL(file, 300, 0.8, (dataUrl) => {
+        const arr = getTargetArrayBySectionKey(key);
+        if (arr && arr[idx]) {
+          arr[idx].photoUrl = dataUrl;
+          renderOwnerInventoryTables();
+          showToast('Foto cargada. Toca Guardar.', 'success');
+        }
+      });
+    }
+
+    function addNewInventoryItem() {
+      const cat = document.getElementById('new-item-category').value;
+      const name = document.getElementById('new-item-name').value.trim();
+      const price = parseInt(document.getElementById('new-item-price').value, 10);
+      const stock = parseInt(document.getElementById('new-item-stock').value, 10) || 15;
+      if (!name || isNaN(price)) {
+        showToast('Escribe nombre y precio.', 'error');
+        return;
+      }
+      const id = 'item-' + Date.now();
+      if (cat === 'flowerTypes') {
+        CATALOG.flowerTypes.push({ id, name, desc: 'Flor artesanal de taller', dimensions: 'Medida artesanal estándar', material: 'Cinta satinada', unitPrice: price, stock, active: true, shape: 'rose-pearl', photoUrl: '' });
+      } else if (cat === 'paperStyles') {
+        CATALOG.paperStyles.push({ id, name, price, stock, active: true, desc: 'Envoltura especial', photoUrl: '' });
+      } else if (cat === 'bowStyles') {
+        CATALOG.bowStyles.push({ id, name, price, stock, active: true, desc: 'Cinta decorativa', photoUrl: '' });
+      } else {
+        const target = CATALOG.extrasCategories.find((c) => c.id === cat) || CATALOG.extrasCategories[0];
+        target.items.push({ id, name, price, stock, active: true, group: 'topper', text: name, dimensions: 'Detalle decorativo', material: 'Acabado artesanal', photoUrl: '' });
+      }
+      document.getElementById('new-item-name').value = '';
+      document.getElementById('new-item-price').value = '';
+      renderOwnerInventoryTables();
+      showToast(`"${name}" agregado.`, 'success');
+    }
+
+    function uploadRealBouquetPhoto() {
+      const file = document.getElementById('gallery-photo-file').files?.[0];
+      const title = document.getElementById('gallery-photo-title').value.trim();
+      const price = parseInt(document.getElementById('gallery-photo-price').value, 10) || 40000;
+      const category = document.getElementById('gallery-photo-category').value;
+      if (!file || !title) {
+        showToast('Selecciona una foto y escribe su título.', 'error');
+        return;
+      }
+      compressImageToDataURL(file, 650, 0.82, (dataUrl) => {
+        REAL_GALLERY.unshift({ id: 'real-' + Date.now(), title, price, category, dataUrl });
+        try {
+          localStorage.setItem(STORAGE_KEY_GALLERY, JSON.stringify(REAL_GALLERY));
+        } catch (e) {
+          showToast('Memoria llena; descarga un respaldo JSON.', 'error');
+        }
+        document.getElementById('gallery-photo-file').value = '';
+        document.getElementById('gallery-photo-title').value = '';
+        renderOwnerGalleryGrid();
+        renderHomeRealGallery();
+        showToast('¡Foto publicada en Inicio!', 'success');
+      });
+    }
+
+    function renderOwnerGalleryGrid() {
+      const grid = document.getElementById('owner-gallery-grid');
+      if (!REAL_GALLERY.length) {
+        grid.innerHTML = `<p class="col-span-full text-center text-xs text-slate-400 py-6">Aún no has subido fotos originales.</p>`;
+        return;
+      }
+      grid.innerHTML = REAL_GALLERY.map(
+        (p, idx) => `
+        <div class="bg-white rounded-2xl overflow-hidden border border-lavender/20 shadow-2xs">
+          <img src="${p.dataUrl}" class="w-full h-32 object-cover" />
+          <div class="p-2.5 flex items-center justify-between gap-1">
+            <div class="min-w-0">
+              <p class="font-bold text-[11px] text-slate-800 truncate">${p.title}</p>
+              <p class="text-[11px] font-extrabold text-lavender-dark">${formatCOP(p.price)}</p>
+            </div>
+            <button type="button" onclick="deleteRealBouquetPhoto(${idx})" class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 text-xs font-bold">
+              🗑
+            </button>
+          </div>
+        </div>
+      `
+      ).join('');
+    }
+
+    function deleteRealBouquetPhoto(idx) {
+      REAL_GALLERY.splice(idx, 1);
+      try { localStorage.setItem(STORAGE_KEY_GALLERY, JSON.stringify(REAL_GALLERY)); } catch (e) {}
+      renderOwnerGalleryGrid();
+      renderHomeRealGallery();
+      showToast('Foto eliminada.', 'info');
+    }
+
+    function uploadCustomLogo(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      compressImageToDataURL(file, 512, 0.88, (dataUrl) => {
+        try {
+          localStorage.setItem(STORAGE_KEY_LOGO, dataUrl);
+        } catch (e) {}
+        applyBrandLogoEverywhere(dataUrl);
+        updatePWAManifestAndIcons(dataUrl);
+        showToast('¡Logo actualizado en toda la App e ícono de inicio!', 'success');
+      });
+    }
+
+    function saveAllOwnerChanges() {
+      const wa = document.getElementById('owner-whatsapp-field').value.replace(/\D/g, '');
+      if (wa.length >= 7) {
+        state.storeWhatsapp = wa;
+        try { localStorage.setItem(STORAGE_KEY_WHATSAPP, wa); } catch (e) {}
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(CATALOG));
+        localStorage.setItem(STORAGE_KEY_GALLERY, JSON.stringify(REAL_GALLERY));
+        showToast('¡Cambios guardados exitosamente!', 'success');
+      } catch (e) {
+        showToast('Cambios aplicados en sesión.', 'info');
+      }
+      ensureValidSelections();
+      renderHomeRealGallery();
+      renderAllBuilderControls();
+      generateBudgetProposals();
+      updateAllPreviews();
+    }
+
+    function exportOwnerBackup() {
+      const data = { catalog: CATALOG, gallery: REAL_GALLERY, whatsapp: state.storeWhatsapp, logo: localStorage.getItem(STORAGE_KEY_LOGO) || '' };
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Respaldo-NubeDePetalos-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      showToast('Respaldo descargado.', 'success');
+    }
+
+    function importOwnerBackup(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.catalog) CATALOG = parsed.catalog;
+          if (parsed.gallery) REAL_GALLERY = parsed.gallery;
+          if (parsed.whatsapp) state.storeWhatsapp = parsed.whatsapp;
+          if (parsed.logo) {
+            localStorage.setItem(STORAGE_KEY_LOGO, parsed.logo);
+            applyBrandLogoEverywhere(parsed.logo);
+            updatePWAManifestAndIcons(parsed.logo);
+          }
+          saveAllOwnerChanges();
+          renderOwnerInventoryTables();
+          renderOwnerGalleryGrid();
+          showToast('¡Respaldo restaurado!', 'success');
+        } catch (err) {
+          showToast('Archivo inválido.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetCatalogToDefaults() {
+      CATALOG = JSON.parse(JSON.stringify(DEFAULT_CATALOG));
+      try { localStorage.removeItem(STORAGE_KEY_CATALOG); } catch (e) {}
+      renderOwnerInventoryTables();
+      renderAllBuilderControls();
+      updateAllPreviews();
+      showToast('Precios restaurados.', 'info');
+    }
+
+    // =========================================================================
+    // 13. TOAST NOTIFICATIONS
+    // =========================================================================
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        success: 'bg-emerald-600 text-white',
+        error: 'bg-rose-600 text-white',
+        info: 'bg-slate-900 text-white',
+      };
+      toast.className = `pointer-events-auto px-4 py-2.5 rounded-2xl shadow-lg text-xs font-bold flex items-center gap-2 transition-all duration-300 transform -translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+      toast.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '!' : '✨'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('-translate-y-2', 'opacity-0'));
+      setTimeout(() => {
+        toast.classList.add('-translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+  </script>
+</body>
+</html>
